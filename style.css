@@ -16,7 +16,7 @@ body {
   padding: 16px;
   overflow-y: auto;
   background-color: #e8f4fa;
-  border-right: 1px solid red;
+  border-right: 1px solid #b3dff1;
 }
 
 /* Checklist Panel */
@@ -57,7 +57,7 @@ iframe {
 /* Buttons */
 button,
 .upload-label {
-  background-color: #24a0d6;
+  background-color: red;
   color: #fff;
   border: none;
   padding: 8px 16px;
