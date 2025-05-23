@@ -1,3 +1,4 @@
+/*import.js*/
 import { showToast } from "./toast.js";
 
 export function publishChecklist() {
@@ -8,24 +9,27 @@ export function publishChecklist() {
   }
 
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
-  let lines = [];
+  const lines = [];
 
   Object.entries(folders).forEach(([folderName, files]) => {
     files.forEach(file => {
       const fileKey = `${folderName}/${file}`;
       const items = allData[fileKey] || {};
-      let latestStatus = "";
-      let latestComment = "";
 
-      for (let item of checklistItems) {
-        if (items[item]?.status) {
-          latestStatus = items[item].status;
-          latestComment = items[item].comment || "";
+      let status = "";
+      let comment = "";
+
+      for (const item of checklistItems) {
+        const entry = items[item];
+        if (entry?.status?.trim()) {
+          status = entry.status;
+          comment = entry.comment || "";
+          break; // Use the first answered item only
         }
       }
 
-      const value = latestStatus
-        ? (latestComment ? `${latestStatus} (Comment: ${latestComment})` : latestStatus)
+      const value = status
+        ? (comment ? `${status} (Comment: ${comment})` : status)
         : "";
 
       lines.push(`${fileKey}: ${value}`);

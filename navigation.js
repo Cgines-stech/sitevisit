@@ -1,4 +1,3 @@
-/*navigation.js*/
 function buildNavTree() {
   folderListEl.innerHTML = "";
   flatFileList = [];
@@ -20,8 +19,8 @@ function buildNavTree() {
     rootHeader.className = "folder-label";
     rootHeader.textContent = `📂 ${rootFolder}`;
     const rootUl = document.createElement("ul");
+    rootUl.setAttribute("role", "group");
 
-    // Collapse Standard2 by default
     if (rootFolder === "Standard2") {
       rootUl.style.display = "none";
     }
@@ -31,7 +30,6 @@ function buildNavTree() {
     };
 
     subfolders.forEach(({ subpath, files, fullPath }) => {
-      // Handle root-level files (no subpath)
       if (!subpath) {
         files.forEach(file => {
           const displayKey = `${fullPath}/${file}`;
@@ -43,22 +41,27 @@ function buildNavTree() {
           const fileLi = document.createElement("li");
           fileLi.className = "file-entry";
           fileLi.id = `nav-${displayKey}`;
+          fileLi.setAttribute("role", "treeitem");
+          fileLi.setAttribute("aria-label", displayName);
+
           fileLi.innerHTML = `📄 ${displayName} <span class="status-icon" style="margin-left: 6px;"></span>`;
-          fileLi.onclick = () => setFile(fullURL, displayKey);
+          fileLi.onclick = () => {
+            const cacheBustedUrl = `${fullURL}?t=${Date.now()}`;
+            setFile(cacheBustedUrl, displayKey);
+            highlightCurrentFile(displayKey);
+          };
 
           rootUl.appendChild(fileLi);
-
-          // Refresh status icon for this file
           updateNavStatus(displayKey);
         });
 
-        return; // Skip rest of loop
+        return;
       }
 
-      // Subfolder logic
       const subLi = document.createElement("li");
       const subUl = document.createElement("ul");
       subUl.style.display = "none";
+      subUl.setAttribute("role", "group");
 
       const subLabel = document.createElement("div");
       subLabel.className = "folder-label";
@@ -78,12 +81,17 @@ function buildNavTree() {
         const fileLi = document.createElement("li");
         fileLi.className = "file-entry";
         fileLi.id = `nav-${displayKey}`;
+        fileLi.setAttribute("role", "treeitem");
+        fileLi.setAttribute("aria-label", displayName);
+
         fileLi.innerHTML = `📄 ${displayName} <span class="status-icon" style="margin-left: 6px;"></span>`;
-        fileLi.onclick = () => setFile(fullURL, displayKey);
+        fileLi.onclick = () => {
+          const cacheBustedUrl = `${fullURL}?t=${Date.now()}`;
+          setFile(cacheBustedUrl, displayKey);
+          highlightCurrentFile(displayKey);
+        };
 
         subUl.appendChild(fileLi);
-
-        // Refresh status icon for this file
         updateNavStatus(displayKey);
       });
 
@@ -124,5 +132,15 @@ function updateNavStatus(fileKey) {
     icon.textContent = "";
   }
 }
+
+function highlightCurrentFile(selectedKey) {
+  document.querySelectorAll(".file-entry").forEach(el => {
+    el.classList.remove("active");
+  });
+
+  const selected = document.getElementById(`nav-${selectedKey}`);
+  if (selected) selected.classList.add("active");
+}
+
 window.buildNavTree = buildNavTree;
-window.updateNavStatus = updateNavStatus; // if not already included
+window.updateNavStatus = updateNavStatus;

@@ -1,4 +1,5 @@
 /* style.css */
+/* Base Layout */
 body {
   display: flex;
   margin: 0;
@@ -6,28 +7,29 @@ body {
   height: 100vh;
   background-color: #f8f9fa;
   color: #333;
+  flex-direction: row;
 }
 
+/* Navigation Panel */
 .nav {
   width: 20%;
   padding: 16px;
   overflow-y: auto;
-  background-color: #e8f4fa; /* light blue tint */
-  border-right: 1px solid #b3dff1;
+  background-color: #e8f4fa;
+  border-right: 1px solid red;
 }
 
+/* Checklist Panel */
 .checklist {
   width: 15%;
   padding: 16px;
   overflow-y: auto;
-  background-color: #e8f4fa; /* light blue tint */
+  background-color: #e8f4fa;
+  border-left: 1px solid #b3dff1;
   border-right: 1px solid #b3dff1;
 }
 
-.checklist {
-  border-left: 1px solid #b3dff1;
-}
-
+/* Viewer Area */
 .viewer {
   flex: 1;
   display: flex;
@@ -35,12 +37,14 @@ body {
   background-color: #fff;
 }
 
+/* PDF Frame */
 iframe {
   border: none;
   flex: 1;
   height: 100%;
 }
 
+/* Viewer Controls */
 .viewer > div {
   display: flex;
   justify-content: center;
@@ -50,7 +54,9 @@ iframe {
   border-top: 1px solid #ccc;
 }
 
-button {
+/* Buttons */
+button,
+.upload-label {
   background-color: #24a0d6;
   color: #fff;
   border: none;
@@ -59,46 +65,47 @@ button {
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.2s;
+  display: inline-block;
+  text-align: center;
 }
 
-button:hover {
+button:hover,
+.upload-label:hover {
   background-color: #1d8abe;
 }
 
+button:focus,
+.upload-label:focus,
+.folder-label:focus {
+  outline: 2px solid #3399ff;
+  outline-offset: 2px;
+}
+
+/* Form Labels & Textarea */
 label {
   display: block;
   margin: 6px 0;
 }
 
-.upload-label {
-  background-color: #24a0d6;
-  color: white;
-  padding: 8px 16px;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 4px;
-  cursor: pointer;
-  display: inline-block;
-  transition: background-color 0.2s;
-}
-
-.upload-label:hover {
-  background-color: #1d8abe;
-}
-
 textarea {
-  width: 95%;
+  width: 100%;
   height: 150px;
   margin-top: 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
   padding: 8px;
   font-family: sans-serif;
+  box-sizing: border-box;
 }
 
+/* Folder Navigation */
 ul {
   list-style: none;
   padding-left: 0;
+}
+
+.nav ul ul {
+  padding-left: 16px;
 }
 
 .folder-label {
@@ -108,29 +115,64 @@ ul {
   margin-top: 10px;
 }
 
+/* File Entries */
 .file-entry {
   cursor: pointer;
   margin: 4px 0 4px 10px;
 }
 
+.file-entry.active {
+  background-color: #e0f0ff;
+  font-weight: bold;
+  border-left: 3px solid #3399ff;
+}
+
+/* Headings */
 h3 {
   color: #24a0d6;
   margin-bottom: 12px;
 }
 
-.nav ul ul {
-  padding-left: 16px;
-}
-
+/* Toasts */
 .publish-toast {
   position: fixed;
-  bottom: 16px;
-  right: 16px;
-  background-color: #24a0d6;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 4px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
   z-index: 1000;
-  font-weight: bold;
+}
+
+.publish-toast.show {
+  opacity: 1;
+}
+
+.publish-toast.error {
+  background: #f44336;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+  }
+
+  .nav,
+  .checklist {
+    width: 100%;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid #b3dff1;
+  }
+
+  .viewer {
+    order: 3;
+  }
 }

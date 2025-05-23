@@ -3,7 +3,8 @@ function setFile(pdfPath, keyForChecklist) {
   saveChecklistItem();
   currentFileIndex = flatFileList.indexOf(keyForChecklist);
   currentItem = 0;
-  viewerEl.src = pdfPath;
+  viewerEl.src = `${pdfPath}?t=${Date.now()}`; // force reload
+  checklistContainer.innerHTML = ""; // safeguard clear
   loadChecklist();
 }
 
@@ -15,7 +16,6 @@ function prevFile() {
 
     const key = flatFileList[currentFileIndex];
     const url = `https://cgines-stech.github.io/sitevisit/pdf/${key}`;
-
     setFile(url, key);
   }
 }
@@ -28,7 +28,6 @@ function nextFile() {
 
     const key = flatFileList[currentFileIndex];
     const url = `https://cgines-stech.github.io/sitevisit/pdf/${key}`;
-
     setFile(url, key);
   }
 }

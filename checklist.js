@@ -1,51 +1,9 @@
 /*checklist.js*/
-function downloadChecklist() {
-  const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
-  let lines = [];
-
-  Object.entries(folders).forEach(([folderName, files]) => {
-    files.forEach(file => {
-      const fileKey = `${folderName}/${file}`;
-      const items = allData[fileKey] || {};
-
-      let firstAnsweredItem = null;
-      let firstStatus = "";
-      let firstComment = "";
-
-      for (let item of checklistItems) {
-        if (items[item]?.status) {
-          firstAnsweredItem = item;
-          firstStatus = items[item].status;
-          firstComment = items[item].comment || "";
-          break; // Exit on first answered item
-        }
-      }
-
-      const value = firstStatus
-        ? (firstComment ? `${firstStatus} (Comment: ${firstComment})` : firstStatus)
-        : "";
-
-      lines.push(`${fileKey}: ${value}`);
-    });
-  });
-
-  const blob = new Blob([lines.join("\n")], { type: "text/plain" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "checklist-backup.txt";
-  a.style.display = "none";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-
 function saveChecklistItem() {
   const fileKey = flatFileList[currentFileIndex];
   const itemKey = checklistItems[currentItem];
+  if (!fileKey || !itemKey) return;
+
   const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
   const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
@@ -57,38 +15,41 @@ function saveChecklistItem() {
 }
 
 function loadChecklist() {
-  // Clear all previous UI
   checklistContainer.innerHTML = "";
 
   const fileKey = flatFileList[currentFileIndex];
-  const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
   const itemKey = checklistItems[currentItem];
+  if (!fileKey || !itemKey) return;
+
+  const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
   const itemData = allData[fileKey]?.[itemKey] || {};
 
-  // Add label
   const label = document.createElement("h4");
   label.textContent = itemKey;
   checklistContainer.appendChild(label);
 
-  // Radio buttons
   ["Yes", "No", "N/A"].forEach(opt => {
-    const label = document.createElement("label");
-    label.innerHTML = `
-      <input type="radio" name="status" value="${opt}" ${
-        itemData.status === opt ? "checked" : ""
-      }> ${opt}
-    `;
-    checklistContainer.appendChild(label);
+    const wrapper = document.createElement("label");
+    const radio = document.createElement("input");
+    radio.type = "radio";
+    radio.name = "status";
+    radio.value = opt;
+    if (itemData.status === opt) radio.checked = true;
+
+    radio.setAttribute("aria-label", `${itemKey} - ${opt}`);
+    wrapper.appendChild(radio);
+    wrapper.append(` ${opt}`);
+    checklistContainer.appendChild(wrapper);
   });
 
-  // Textarea
   const textarea = document.createElement("textarea");
   textarea.name = "comment";
   textarea.placeholder = "Enter comment here...";
   textarea.value = itemData.comment || "";
+  textarea.setAttribute("aria-describedby", "comment-help");
   checklistContainer.appendChild(textarea);
 
-  // Attach save handlers
+  // Save on interaction
   checklistContainer.querySelectorAll('input[name="status"]').forEach(input => {
     input.addEventListener("change", () => {
       saveChecklistItem();
