@@ -67,8 +67,39 @@ window.loadChecklist = loadChecklist;
 window.saveChecklistItem = saveChecklistItem;
 
 document.addEventListener("DOMContentLoaded", () => {
-    const importFileInput = document.getElementById("importFile");
+  // ✅ DOWNLOAD BUTTON LOGIC
+  const downloadBtn = document.getElementById("downloadBtn");
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", () => {
+      const checklistData = JSON.parse(localStorage.getItem("checklist") || "{}");
+      if (!Object.keys(checklistData).length) {
+        alert("No checklist data found to download.");
+        return;
+      }
 
+      let output = "";
+      for (const file in checklistData) {
+        for (const item in checklistData[file]) {
+          const { status } = checklistData[file][item];
+          const keyPath = `${file}/${item}`.replace(/\/+/g, "/");
+          output += `${keyPath}: ${status || "N/A"}\n`;
+        }
+      }
+
+      const blob = new Blob([output], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "checklist_export.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // ✅ UPLOAD FILE IMPORT (TXT FORMAT: path/to/file.pdf: Yes)
+  const importFileInput = document.getElementById("importFile");
   if (importFileInput) {
     importFileInput.addEventListener("change", (event) => {
       const file = event.target.files[0];
@@ -80,38 +111,32 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           let data;
           if (file.name.endsWith(".json")) {
-            // JSON import (preferred for accuracy)
             data = JSON.parse(content);
             if (typeof data !== "object" || Array.isArray(data)) {
               throw new Error("Invalid checklist JSON structure.");
             }
           } else {
-            // TXT import (attempt to parse the format from your download function)
+            // Parse TXT: format = path/to/file/item.pdf: Yes
             data = {};
-            let currentFile = null;
             const lines = content.split("\n");
             for (const line of lines) {
-              if (line.startsWith("File: ")) {
-                currentFile = line.replace("File: ", "").trim();
-                data[currentFile] = {};
-              } else if (line.trim().startsWith("- ")) {
-                const item = line.replace("- ", "").trim();
-                const statusLine = lines[lines.indexOf(line) + 1]?.trim();
-                const commentLine = lines[lines.indexOf(line) + 2]?.trim();
+              const [fullPath, statusRaw] = line.split(":");
+              if (!fullPath || !statusRaw) continue;
+              const cleanedPath = fullPath.trim();
+              const status = statusRaw.trim();
 
-                const status = statusLine?.replace("Status: ", "") || "";
-                const comment = commentLine?.replace("Comment: ", "") || "";
+              const parts = cleanedPath.split("/");
+              const item = parts.pop();
+              const fileKey = parts.join("/");
 
-                if (currentFile && item) {
-                  data[currentFile][item] = { status, comment };
-                }
-              }
+              if (!data[fileKey]) data[fileKey] = {};
+              data[fileKey][item] = { status, comment: "" };
             }
           }
 
           localStorage.setItem("checklist", JSON.stringify(data));
           alert("Checklist imported successfully!");
-          location.reload(); // Refresh to reflect changes
+          location.reload();
         } catch (err) {
           alert("Failed to import checklist. Ensure it's valid JSON or exported TXT format.");
           console.error(err);
