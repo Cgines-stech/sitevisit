@@ -11,23 +11,19 @@ export function importChecklist() {
     const newData = {};
 
     lines.forEach(line => {
-      const [fileKeyRaw, restRaw] = line.split(":");
-      const fileKey = fileKeyRaw?.trim().replace(/^\.*\/+/, '').replace(/\/+$/, '');
-      const rest = restRaw?.trim();
-      if (!fileKey || rest === undefined) return;
+      const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
+      if (!match) return;
 
-      // Match single answer with optional comment
-      const match = rest.match(/^(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
-      if (match) {
-        const status = match[1];
-        const comment = match[2] || "";
-        newData[fileKey] = {
-          [checklistItems[0]]: { status, comment }
-        };
-      }
+      const fileKey = match[1]?.trim();
+      const itemKey = match[2]?.trim();
+      const status = match[3];
+      const comment = match[4] || "";
+
+      if (!fileKey || !itemKey || !status) return;
+      if (!newData[fileKey]) newData[fileKey] = {};
+      newData[fileKey][itemKey] = { status, comment };
     });
 
-    // Store in localStorage
     localStorage.setItem("checklist", JSON.stringify(newData));
 
     // Refresh UI
@@ -35,7 +31,7 @@ export function importChecklist() {
     flatFileList.forEach(fileKey => updateNavStatus(fileKey));
     loadChecklist();
 
-    alert("Checklist backup imported successfully.");
+    alert("Checklist imported successfully.");
   };
 
   reader.readAsText(file);

@@ -8,23 +8,14 @@ export function downloadChecklist() {
       const fileKey = `${folderName}/${file}`;
       const itemData = allData[fileKey] || {};
 
-      let status = "";
-      let comment = "";
-
-      for (const item of checklistItems) {
+      checklistItems.forEach(item => {
         const entry = itemData[item];
         if (entry?.status?.trim()) {
-          status = entry.status;
-          comment = entry.comment || "";
-          break; // Use the first answered item
+          const status = entry.status;
+          const comment = entry.comment ? ` (Comment: ${entry.comment})` : "";
+          lines.push(`${fileKey}: ${item} = ${status}${comment}`);
         }
-      }
-
-      const value = status
-        ? (comment ? `${status} (Comment: ${comment})` : status)
-        : "";
-
-      lines.push(`${fileKey}: ${value}`);
+      });
     });
   });
 
