@@ -51,17 +51,7 @@
   <script src="checklist.js"></script>
   <script src="viewer.js"></script>
 
-  <!-- Module-based script for export logic -->
-  <script type="module">
-    import { publishChecklist } from './js/publish.js';
-    import { downloadChecklist } from './js/download.js';
-    import { importChecklist } from './js/import.js';
 
-    // Attach to window to support inline onclick handlers
-    window.publishChecklist = publishChecklist;
-    window.downloadChecklist = downloadChecklist;
-    window.importChecklist = importChecklist;
-  </script>
 
   <!-- Main Startup Script -->
   <script>
@@ -79,3 +69,14 @@
 
 </body>
 </html>
+  <!-- Module-based script for export logic -->
+  <script type="module">
+    import { publishChecklist } from './js/publish.js';
+    import { downloadChecklist } from './js/download.js';
+    import { importChecklist } from './js/import.js';
+
+    // Attach to window to support inline onclick handlers
+    window.publishChecklist = publishChecklist;
+    window.downloadChecklist = downloadChecklist;
+    window.importChecklist = importChecklist;
+  </script>
