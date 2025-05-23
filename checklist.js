@@ -65,3 +65,59 @@ function loadChecklist() {
 window.updateNavStatus = updateNavStatus;
 window.loadChecklist = loadChecklist;
 window.saveChecklistItem = saveChecklistItem;
+
+document.addEventListener("DOMContentLoaded", () => {
+    const importFileInput = document.getElementById("importFile");
+
+  if (importFileInput) {
+    importFileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const content = e.target.result;
+        try {
+          let data;
+          if (file.name.endsWith(".json")) {
+            // JSON import (preferred for accuracy)
+            data = JSON.parse(content);
+            if (typeof data !== "object" || Array.isArray(data)) {
+              throw new Error("Invalid checklist JSON structure.");
+            }
+          } else {
+            // TXT import (attempt to parse the format from your download function)
+            data = {};
+            let currentFile = null;
+            const lines = content.split("\n");
+            for (const line of lines) {
+              if (line.startsWith("File: ")) {
+                currentFile = line.replace("File: ", "").trim();
+                data[currentFile] = {};
+              } else if (line.trim().startsWith("- ")) {
+                const item = line.replace("- ", "").trim();
+                const statusLine = lines[lines.indexOf(line) + 1]?.trim();
+                const commentLine = lines[lines.indexOf(line) + 2]?.trim();
+
+                const status = statusLine?.replace("Status: ", "") || "";
+                const comment = commentLine?.replace("Comment: ", "") || "";
+
+                if (currentFile && item) {
+                  data[currentFile][item] = { status, comment };
+                }
+              }
+            }
+          }
+
+          localStorage.setItem("checklist", JSON.stringify(data));
+          alert("Checklist imported successfully!");
+          location.reload(); // Refresh to reflect changes
+        } catch (err) {
+          alert("Failed to import checklist. Ensure it's valid JSON or exported TXT format.");
+          console.error(err);
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
+});
