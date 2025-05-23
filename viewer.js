@@ -14,7 +14,7 @@ function prevFile() {
     currentItem = 0;
 
     const key = flatFileList[currentFileIndex];
-    const url = `https://cgines-stech.github.io/pdf/sitevisit/${key}`;
+    const url = `https://cgines-stech.github.io/sitevisit/pdf/${key}`;
 
     setFile(url, key);
   }
@@ -27,7 +27,7 @@ function nextFile() {
     currentItem = 0;
 
     const key = flatFileList[currentFileIndex];
-    const url = `https://cgines-stech.github.io/pdf/sitevisit/${key}`;
+    const url = `https://cgines-stech.github.io/sitevisit/pdf/${key}`;
 
     setFile(url, key);
   }
