@@ -1,23 +1,28 @@
 /*download.js*/
 export function downloadChecklist() {
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
-  let lines = [];
+  const lines = [];
 
   Object.entries(folders).forEach(([folderName, files]) => {
     files.forEach(file => {
       const fileKey = `${folderName}/${file}`;
-      const items = allData[fileKey] || {};
+      const itemData = allData[fileKey] || {};
 
-      let parts = checklistItems.map(item => {
-        const entry = items[item] || {};
-        if (!entry.status) return "";
+      const responses = checklistItems.map(item => {
+        const entry = itemData[item];
+        if (!entry || !entry.status) return null;
+
         return entry.comment
           ? `${entry.status} (Comment: ${entry.comment})`
           : entry.status;
-      });
+      }).filter(Boolean); // remove nulls
 
-      const line = `${fileKey}: ${parts.filter(Boolean).join(", ")}`;
-      lines.push(line);
+      // Only export if there are responses
+      if (responses.length > 0) {
+        lines.push(`${fileKey}: ${responses.join(", ")}`);
+      } else {
+        lines.push(`${fileKey}:`);
+      }
     });
   });
 
