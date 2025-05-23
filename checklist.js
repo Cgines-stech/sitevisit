@@ -57,29 +57,38 @@ function saveChecklistItem() {
 }
 
 function loadChecklist() {
+  // Clear all previous UI
   checklistContainer.innerHTML = "";
+
   const fileKey = flatFileList[currentFileIndex];
-  const itemKey = checklistItems[currentItem]; // defaults to "Item 1"
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
+  const itemKey = checklistItems[currentItem];
   const itemData = allData[fileKey]?.[itemKey] || {};
 
+  // Add label
   const label = document.createElement("h4");
   label.textContent = itemKey;
   checklistContainer.appendChild(label);
 
+  // Radio buttons
   ["Yes", "No", "N/A"].forEach(opt => {
     const label = document.createElement("label");
-    label.innerHTML = `<input type="radio" name="status" value="${opt}" ${itemData.status === opt ? "checked" : ""}> ${opt}`;
+    label.innerHTML = `
+      <input type="radio" name="status" value="${opt}" ${
+        itemData.status === opt ? "checked" : ""
+      }> ${opt}
+    `;
     checklistContainer.appendChild(label);
   });
 
+  // Textarea
   const textarea = document.createElement("textarea");
   textarea.name = "comment";
   textarea.placeholder = "Enter comment here...";
   textarea.value = itemData.comment || "";
   checklistContainer.appendChild(textarea);
 
-  // Save on change
+  // Attach save handlers
   checklistContainer.querySelectorAll('input[name="status"]').forEach(input => {
     input.addEventListener("change", () => {
       saveChecklistItem();
@@ -91,6 +100,7 @@ function loadChecklist() {
     saveChecklistItem();
   });
 }
+
 window.updateNavStatus = updateNavStatus;
 window.loadChecklist = loadChecklist;
 window.saveChecklistItem = saveChecklistItem;
