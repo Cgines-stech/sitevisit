@@ -10,4 +10,3 @@ export function showToast(message) {
     setTimeout(() => msg.remove(), 500); // wait for animation to finish
   }, 4000);
 }
-showToast("Something went wrong!", "error");

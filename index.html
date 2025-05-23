@@ -40,8 +40,6 @@
 
       <label for="importFile" class="upload-label">Upload</label>
       <input type="file" id="importFile" accept=".txt" style="display: none;" />
-
-      <button id="publishBtn">Publish</button>
     </div>
   </div>
 
@@ -69,18 +67,15 @@
       document.getElementById("nextBtn").addEventListener("click", nextFile);
       document.getElementById("downloadBtn").addEventListener("click", () => window.downloadChecklist?.());
       document.getElementById("importFile").addEventListener("change", () => window.importChecklist?.());
-      document.getElementById("publishBtn").addEventListener("click", () => window.publishChecklist?.());
     });
   </script>
 
   <!-- Module-based script for export logic -->
   <script type="module">
-    import { publishChecklist } from './js/publish.js';
     import { downloadChecklist } from './js/download.js';
     import { importChecklist } from './js/import.js';
 
     // Attach to window to support access in inline scripts
-    window.publishChecklist = publishChecklist;
     window.downloadChecklist = downloadChecklist;
     window.importChecklist = importChecklist;
   </script>
