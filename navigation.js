@@ -35,7 +35,7 @@ function buildNavTree() {
       if (!subpath) {
         files.forEach(file => {
           const displayKey = `${fullPath}/${file}`;
-          const fullURL = `https://cgines-stech.github.io/Course-Catalog/sitevisit/${fullPath}/${file}`;
+          const fullURL = `https://cgines-stech.github.io/pdf/sitevisit/${fullPath}/${file}`;
           const displayName = file.replace(/\.docx\.pdf$/, '').replace(/\.pdf$/, '');
 
           flatFileList.push(displayKey);
@@ -70,7 +70,7 @@ function buildNavTree() {
 
       files.forEach(file => {
         const displayKey = `${fullPath}/${file}`;
-        const fullURL = `https://cgines-stech.github.io/Course-Catalog/sitevisit/${fullPath}/${file}`;
+        const fullURL = `https://cgines-stech.github.io/pdf/sitevisit/${fullPath}/${file}`;
         const displayName = file.replace(/\.docx\.pdf$/, '').replace(/\.pdf$/, '');
 
         flatFileList.push(displayKey);
