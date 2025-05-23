@@ -14,24 +14,35 @@ export function importChecklist() {
       const [fileKeyRaw, restRaw] = line.split(":");
       const fileKey = fileKeyRaw?.trim().replace(/^\.*\/+/, '').replace(/\/+$/, '');
       const rest = restRaw?.trim();
-      if (!fileKey || !rest) return;
+      if (!fileKey || rest === undefined) return;
 
       const entries = rest.split(/,(?![^\(]*\))/).map(e => e.trim()).filter(Boolean);
       if (!entries.length) return;
 
       newData[fileKey] = {};
 
-      entries.forEach((entry, i) => {
-        const match = entry.match(/^(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
-        if (match && checklistItems[i]) {
+      if (entries.length === 1 && checklistItems.length > 1) {
+        // One response, many checklist items — assign ONLY to Item 1
+        const match = entries[0].match(/^(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
+        if (match) {
           const status = match[1];
           const comment = match[2] || "";
-          newData[fileKey][checklistItems[i]] = { status, comment };
+          newData[fileKey][checklistItems[0]] = { status, comment };
         }
-      });
+      } else {
+        // Map each response to its corresponding checklist item
+        entries.forEach((entry, i) => {
+          const match = entry.match(/^(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
+          if (match && checklistItems[i]) {
+            const status = match[1];
+            const comment = match[2] || "";
+            newData[fileKey][checklistItems[i]] = { status, comment };
+          }
+        });
+      }
     });
 
-    // Replace checklist data in localStorage
+    // Store in localStorage
     localStorage.setItem("checklist", JSON.stringify(newData));
 
     // Refresh UI
