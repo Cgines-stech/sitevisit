@@ -19,25 +19,26 @@ export function importChecklist() {
       const entries = rest.split(/,(?![^\(]*\))/).map(e => e.trim()).filter(Boolean);
       newData[fileKey] = {};
 
-      if (entries.length === 1) {
-        const match = entries[0].match(/^(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
-        if (match) {
-          const status = match[1];
-          const comment = match[2] || "";
-          checklistItems.forEach(item => {
-            newData[fileKey][item] = { status, comment };
-          });
-        }
-      } else {
-        entries.forEach((entry, i) => {
-          const match = entry.match(/^(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
-          if (match) {
-            const status = match[1];
-            const comment = match[2] || "";
-            newData[fileKey][checklistItems[i]] = { status, comment };
-          }
-        });
-      }
+      if (entries.length === 1 && checklistItems.length === 1) {
+  // Only one item exists — safe to map it
+  const match = entries[0].match(/^(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
+  if (match) {
+    const status = match[1];
+    const comment = match[2] || "";
+    newData[fileKey][checklistItems[0]] = { status, comment };
+  }
+} else {
+  // Multiple entries – map each to a separate item
+  entries.forEach((entry, i) => {
+    const match = entry.match(/^(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
+    if (match && checklistItems[i]) {
+      const status = match[1];
+      const comment = match[2] || "";
+      newData[fileKey][checklistItems[i]] = { status, comment };
+    }
+  });
+}
+
     });
 
     localStorage.removeItem("checklist");
