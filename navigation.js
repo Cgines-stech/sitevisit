@@ -37,6 +37,8 @@ function buildNavTree() {
           const displayName = file.replace(/\.docx\.pdf$/, '').replace(/\.pdf$/, '');
 
           flatFileList.push(displayKey);
+          localStorage.setItem("flatFileList", JSON.stringify(flatFileList));
+
 
           const fileLi = document.createElement("li");
           fileLi.className = "file-entry";

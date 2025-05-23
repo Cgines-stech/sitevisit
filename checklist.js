@@ -69,34 +69,39 @@ window.saveChecklistItem = saveChecklistItem;
 document.addEventListener("DOMContentLoaded", () => {
   // ✅ DOWNLOAD BUTTON LOGIC
   const downloadBtn = document.getElementById("downloadBtn");
-  if (downloadBtn) {
-    downloadBtn.addEventListener("click", () => {
-      const checklistData = JSON.parse(localStorage.getItem("checklist") || "{}");
-      if (!Object.keys(checklistData).length) {
-        alert("No checklist data found to download.");
-        return;
-      }
+if (downloadBtn) {
+  downloadBtn.addEventListener("click", () => {
+    const checklistData = JSON.parse(localStorage.getItem("checklist") || "{}");
+    const flatFileList = JSON.parse(localStorage.getItem("flatFileList") || "[]");
 
-      let output = "";
-      for (const file in checklistData) {
-        for (const item in checklistData[file]) {
-          const { status } = checklistData[file][item];
-          const keyPath = `${file}/${item}`.replace(/\/+/g, "/");
-          output += `${keyPath}: ${status || "N/A"}\n`;
-        }
-      }
+    if (!Object.keys(checklistData).length || !flatFileList.length) {
+      alert("No checklist data found to download.");
+      return;
+    }
 
-      const blob = new Blob([output], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "checklist_export.txt";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+    let output = "";
+    flatFileList.forEach(fileKey => {
+      const fileItems = checklistData[fileKey];
+      if (!fileItems) return;
+      for (const item in fileItems) {
+        const { status } = fileItems[item];
+        const keyPath = `${fileKey}/${item}`.replace(/\/+/g, "/");
+        output += `${keyPath}: ${status?.trim() || ""}\n`;
+      }
     });
-  }
+
+    const blob = new Blob([output], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "checklist_export.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+}
+
 
   // ✅ UPLOAD FILE IMPORT (TXT FORMAT: path/to/file.pdf: Yes)
   const importFileInput = document.getElementById("importFile");
@@ -123,14 +128,17 @@ document.addEventListener("DOMContentLoaded", () => {
               const [fullPath, statusRaw] = line.split(":");
               if (!fullPath || !statusRaw) continue;
               const cleanedPath = fullPath.trim();
-              const status = statusRaw.trim();
+              const status = statusRaw ? statusRaw.trim() : "";
+              
 
               const parts = cleanedPath.split("/");
               const item = parts.pop();
               const fileKey = parts.join("/");
 
-              if (!data[fileKey]) data[fileKey] = {};
-              data[fileKey][item] = { status, comment: "" };
+              if ((status || "").trim() !== "") {
+  if (!data[fileKey]) data[fileKey] = {};
+  data[fileKey][item] = { status, comment: "" };
+}
             }
           }
 
