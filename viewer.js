@@ -3,15 +3,22 @@ function setFile(pdfPath, keyForChecklist) {
   // Save current checklist before switching
   const previousFileKey = flatFileList[currentFileIndex];
   if (previousFileKey) {
-    const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
-    const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
-    const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
+  const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
+  const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
+  const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
 
-    const itemKey = checklistItems[currentItem];
-    if (!allData[previousFileKey]) allData[previousFileKey] = {};
-    allData[previousFileKey][itemKey] = { status: selectedStatus, comment };
-    localStorage.setItem("checklist", JSON.stringify(allData));
-  }
+  const itemKey = checklistItems[currentItem];
+  if (!allData[previousFileKey]) allData[previousFileKey] = {};
+  const existing = allData[previousFileKey][itemKey] || {};
+
+  allData[previousFileKey][itemKey] = {
+    status: selectedStatus,
+    comment,
+    ...(existing.link && { link: existing.link })
+  };
+
+  localStorage.setItem("checklist", JSON.stringify(allData));
+}
 
   // Switch to new file
   currentFileIndex = flatFileList.indexOf(keyForChecklist);
