@@ -36,6 +36,12 @@
       return row;
     }
 
+    function calculateCompletionPercentage(entries) {
+      const total = entries.length;
+      const completed = entries.filter(e => e.status === "Yes" || e.status === "N/A").length;
+      return total ? Math.round((completed / total) * 100) : 0;
+    }
+
     function createFolderNode(name, parent) {
       const folderDiv = document.createElement("div");
       folderDiv.className = "folder";
@@ -88,13 +94,11 @@
 
         entries.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
 
-        // Organize entries by folder/subfolder
         const folderMap = {};
         entries.forEach(entry => {
           const parts = entry.fileKey.split("/");
           const root = parts[0];
           const sub = parts.length === 3 ? parts[1] : null;
-          const file = parts.slice(-1)[0];
 
           if (!folderMap[root]) folderMap[root] = {};
           const subMap = folderMap[root];
@@ -109,14 +113,15 @@
         });
 
         Object.entries(folderMap).forEach(([folder, subs]) => {
-          const folderNode = createFolderNode(folder, userContent);
+          const flatEntries = Object.values(subs).flat();
+          const percentComplete = calculateCompletionPercentage(flatEntries);
+          const folderNode = createFolderNode(`${folder} (${percentComplete}% complete)`, userContent);
 
           if (subs["__root__"]) {
             const table = document.createElement("table");
             table.innerHTML = `
               <tr>
                 <th>File</th>
-                <th>Item</th>
                 <th>Status</th>
                 <th>Comment</th>
               </tr>
@@ -132,7 +137,6 @@
             table.innerHTML = `
               <tr>
                 <th>File</th>
-                <th>Item</th>
                 <th>Status</th>
                 <th>Comment</th>
               </tr>
