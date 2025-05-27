@@ -65,7 +65,14 @@
       // Button event bindings
       document.getElementById("prevBtn").addEventListener("click", prevFile);
       document.getElementById("nextBtn").addEventListener("click", nextFile);
-      document.getElementById("downloadBtn").addEventListener("click", () => window.downloadChecklist?.());
+      document.getElementById("downloadBtn").addEventListener("click", () => {
+  if (typeof window.downloadChecklist === "function") {
+    window.downloadChecklist();
+  } else {
+    alert("Download module not loaded. Check console or file path.");
+  }
+});
+
       document.getElementById("importFile").addEventListener("change", () => window.importChecklist?.());
     });
   </script>
