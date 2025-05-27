@@ -1,4 +1,7 @@
 /*download.js*/
+
+console.log("✅ download.js module loaded");
+
 export function downloadChecklist() {
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
   const lines = [];
