@@ -104,8 +104,15 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           localStorage.setItem("checklist", JSON.stringify(data));
-          alert("Checklist imported successfully!");
-          location.reload();
+buildNavTree();
+
+// 🔄 Wait a moment for DOM to be built before updating icons
+setTimeout(() => {
+  flatFileList.forEach(fileKey => updateNavStatus(fileKey));
+}, 50);
+
+alert("Checklist imported successfully!");
+
         } catch (err) {
           alert("Failed to import checklist. Ensure it's valid JSON or exported TXT format.");
           console.error(err);
