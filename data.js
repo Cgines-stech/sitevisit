@@ -5,8 +5,8 @@ const folders = {
     "1.2.docx.pdf"
   ],
   "Standard2/Advanced Emergency Medical Technician": [
-    "2.A.1.pdf",
-    "2.A.2.pdf"
+    "2.A.1.docx.pdf",
+    "2.A.2.docx.pdf"
   ]
 };
 
