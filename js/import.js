@@ -23,7 +23,7 @@ export function importChecklist() {
     const newData = {};
 
     lines.forEach(line => {
-      const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?(?: \(Doc: (https?:\/\/.+?)\))?$/i);
+      const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)?(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?(?: \(Doc: (https?:\/\/.+?)\))?$/i);
       if (!match) return;
 
       const fileKey = match[1]?.trim();
@@ -34,7 +34,7 @@ export function importChecklist() {
       const docLink = match[6] || "";
 
 
-      if (!fileKey || !itemKey || !status) return;
+      if (!fileKey || !itemKey || (!status && !comment && !link && !docLink)) return;
       if (!newData[fileKey]) newData[fileKey] = {};
       newData[fileKey][itemKey] = {
   status,
