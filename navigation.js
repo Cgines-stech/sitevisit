@@ -111,10 +111,7 @@ function buildNavTree() {
 
 function updateNavStatus(fileKey) {
   const el = document.getElementById(`nav-${fileKey}`);
-  if (!el) {
-    console.warn(`Missing nav element for fileKey: ${fileKey}`);
-    return;
-  }
+  if (!el) return;  // 👈 quietly ignore missing entries
 
   const icon = el.querySelector(".status-icon");
   if (!icon) return;

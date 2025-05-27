@@ -1,11 +1,9 @@
 /*checklist.js*/
-function saveChecklistItem() {
-  const fileKey = flatFileList[currentFileIndex];
-  const itemKey = checklistItems[currentItem];
+function saveChecklistItem(fileKey, itemKey) {
   if (!fileKey || !itemKey) return;
 
-  const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
-  const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
+  const selectedStatus = checklistContainer.querySelector(`input[name="status-${itemKey}"]:checked`)?.value || "";
+  const comment = checklistContainer.querySelector(`textarea[name="comment-${itemKey}"]`)?.value || "";
 
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
 
@@ -15,67 +13,70 @@ function saveChecklistItem() {
   allData[fileKey][itemKey] = {
     status: selectedStatus,
     comment,
-    ...(existing.link && { link: existing.link })  // ✅ preserve link if it exists
+    ...(existing.link && { link: existing.link })
   };
 
   localStorage.setItem("checklist", JSON.stringify(allData));
 }
 
+
 function loadChecklist() {
   checklistContainer.innerHTML = "";
 
   const fileKey = flatFileList[currentFileIndex];
-  const itemKey = checklistItems[currentItem];
-  if (!fileKey || !itemKey) return;
+  if (!fileKey) return;
 
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
-  const itemData = allData[fileKey]?.[itemKey] || {};
+  const fileData = allData[fileKey] || {};
 
-  const label = document.createElement("h4");
-  label.textContent = itemKey;
-  checklistContainer.appendChild(label);
+  Object.entries(fileData).forEach(([itemKey, itemData]) => {
+    const label = document.createElement("h4");
+    label.textContent = itemKey;
+    checklistContainer.appendChild(label);
 
-  ["Yes", "No", "N/A"].forEach(opt => {
-    const wrapper = document.createElement("label");
-    const radio = document.createElement("input");
-    radio.type = "radio";
-    radio.name = "status";
-    radio.value = opt;
-    if (itemData.status === opt) radio.checked = true;
+    ["Yes", "No", "N/A"].forEach(opt => {
+      const wrapper = document.createElement("label");
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = `status-${itemKey}`;
+      radio.value = opt;
+      if (itemData.status === opt) radio.checked = true;
 
-    radio.setAttribute("aria-label", `${itemKey} - ${opt}`);
-    wrapper.appendChild(radio);
-    wrapper.append(` ${opt}`);
-    checklistContainer.appendChild(wrapper);
-  });
+      radio.setAttribute("aria-label", `${itemKey} - ${opt}`);
+      wrapper.appendChild(radio);
+      wrapper.append(` ${opt}`);
+      checklistContainer.appendChild(wrapper);
+    });
 
-  const textarea = document.createElement("textarea");
-  textarea.name = "comment";
-  textarea.placeholder = "Enter comment here...";
-  textarea.value = itemData.comment || "";
-  textarea.setAttribute("aria-describedby", "comment-help");
-  checklistContainer.appendChild(textarea);
+    const textarea = document.createElement("textarea");
+    textarea.name = `comment-${itemKey}`;
+    textarea.placeholder = "Enter comment here...";
+    textarea.value = itemData.comment || "";
+    textarea.setAttribute("aria-describedby", "comment-help");
+    checklistContainer.appendChild(textarea);
 
-  // 🔗 If there's a link, show it below the comment box
-  if (itemData.link) {
-  const linkEl = document.createElement("div");
-  linkEl.className = "checklist-link";
-  linkEl.innerHTML = `<a href="${itemData.link}" target="_blank" rel="noopener">🔗 View related link</a>`;
-  checklistContainer.appendChild(linkEl);
-}
+    // 🔗 Show link if present
+    if (itemData.link) {
+      const linkEl = document.createElement("div");
+      linkEl.className = "checklist-link";
+      linkEl.innerHTML = `<a href="${itemData.link}" target="_blank" rel="noopener">🔗 View related link</a>`;
+      checklistContainer.appendChild(linkEl);
+    }
 
-  // Save on interaction
-  checklistContainer.querySelectorAll('input[name="status"]').forEach(input => {
-    input.addEventListener("change", () => {
-      saveChecklistItem();
-      updateNavStatus(flatFileList[currentFileIndex]);
+    // Save handlers
+    checklistContainer.querySelectorAll(`input[name="status-${itemKey}"]`).forEach(input => {
+      input.addEventListener("change", () => {
+        saveChecklistItem(fileKey, itemKey);
+        updateNavStatus(fileKey);
+      });
+    });
+
+    textarea.addEventListener("input", () => {
+      saveChecklistItem(fileKey, itemKey);
     });
   });
-
-  textarea.addEventListener("input", () => {
-    saveChecklistItem();
-  });
 }
+
 
 window.updateNavStatus = updateNavStatus;
 window.loadChecklist = loadChecklist;
