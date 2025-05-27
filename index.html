@@ -7,7 +7,7 @@
   <title>PDF Checklist Viewer</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -42,10 +42,10 @@
 
       <label for="importFile" class="upload-label">Upload</label>
       <input type="file" id="importFile" accept=".txt" style="display: none;" />
-      <label for="firestoreUploadInput" class="upload-label">
-  <button type="button">Upload to Cloud</button>
-</label>
-<input type="file" id="firestoreUploadInput" accept=".txt" style="display: none;" />
+
+      <!-- Fixed Upload to Cloud Button -->
+      <button id="uploadToCloudBtn" class="upload-label" type="button">Upload to Cloud</button>
+      <input type="file" id="firestoreUploadInput" accept=".txt" style="display: none;" />
     </div>
   </div>
 
@@ -55,7 +55,6 @@
   <script src="checklist.js"></script>
   <script src="viewer.js"></script>
 
-  
   <!-- Startup and DOM Event Bindings -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -69,85 +68,92 @@
 
       window.addEventListener("beforeunload", saveChecklistItem);
 
-      // Button event bindings
       document.getElementById("prevBtn").addEventListener("click", prevFile);
       document.getElementById("nextBtn").addEventListener("click", nextFile);
+
       document.getElementById("downloadBtn").addEventListener("click", () => {
-  if (typeof window.downloadChecklist === "function") {
-    window.downloadChecklist();
-  } else {
-    alert("Download module not loaded. Check console or file path.");
-  }
-});
+        if (typeof window.downloadChecklist === "function") {
+          window.downloadChecklist();
+        } else {
+          alert("Download module not loaded. Check console or file path.");
+        }
+      });
 
       document.getElementById("importFile").addEventListener("change", () => window.importChecklist?.());
+
+      // ✅ Handle Upload to Cloud button triggering file input
+      const uploadCloudBtn = document.getElementById("uploadToCloudBtn");
+      const hiddenInput = document.getElementById("firestoreUploadInput");
+      if (uploadCloudBtn && hiddenInput) {
+        uploadCloudBtn.addEventListener("click", () => hiddenInput.click());
+      }
     });
   </script>
 
-  <!-- Module-based script for export logic -->
+  <!-- Module-based script for import/export -->
   <script type="module">
     import { downloadChecklist } from './js/download.js';
     import { importChecklist } from './js/import.js';
-
-    // Attach to window to support access in inline scripts
     window.downloadChecklist = downloadChecklist;
     window.importChecklist = importChecklist;
   </script>
+
+  <!-- Firebase Firestore Upload Script -->
   <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDANwGnTgz2Sd-VS-9tjrsT5FvsUpe2NQc",
-    authDomain: "sitevisit2025-6a6ce.firebaseapp.com",
-    projectId: "sitevisit2025-6a6ce"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDANwGnTgz2Sd-VS-9tjrsT5FvsUpe2NQc",
+      authDomain: "sitevisit2025-6a6ce.firebaseapp.com",
+      projectId: "sitevisit2025-6a6ce"
+    };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-  async function uploadToFirestore(fileContent) {
-    const lines = fileContent.split("\n").filter(Boolean);
-    const userIdLine = lines.find(line => line.toLowerCase().startsWith("user id:"));
-    if (!userIdLine) return alert("User ID missing in file");
+    async function uploadToFirestore(fileContent) {
+      const lines = fileContent.split("\n").filter(Boolean);
+      const userIdLine = lines.find(line => line.toLowerCase().startsWith("user id:"));
+      if (!userIdLine) return alert("User ID missing in file");
 
-    const userId = userIdLine.split(":")[1]?.trim();
-    if (!userId) return alert("Invalid User ID");
+      const userId = userIdLine.split(":")[1]?.trim();
+      if (!userId) return alert("Invalid User ID");
 
-    const checklist = {};
-    for (const line of lines) {
-      const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?(?: \(Doc: (https?:\/\/.+?)\))?$/i);
-      if (!match) continue;
+      const checklist = {};
+      for (const line of lines) {
+        const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?(?: \(Doc: (https?:\/\/.+?)\))?$/i);
+        if (!match) continue;
 
-      const [_, fileKey, itemKey, status, comment = "", link = "", doc = ""] = match;
-      if (!checklist[fileKey]) checklist[fileKey] = {};
-      checklist[fileKey][itemKey] = {
-        status,
-        comment,
-        ...(link && { link }),
-        ...(doc && { docLink: doc })
-      };
+        const [_, fileKey, itemKey, status, comment = "", link = "", doc = ""] = match;
+        if (!checklist[fileKey]) checklist[fileKey] = {};
+        checklist[fileKey][itemKey] = {
+          status,
+          comment,
+          ...(link && { link }),
+          ...(doc && { docLink: doc })
+        };
+      }
+
+      await db.collection("checklists").doc(userId).set({
+        uploadedAt: new Date().toISOString(),
+        userId,
+        checklist
+      });
+
+      alert("Upload successful!");
     }
 
-    await db.collection("checklists").doc(userId).set({
-      uploadedAt: new Date().toISOString(),
-      userId,
-      checklist
+    document.getElementById("firestoreUploadInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => uploadToFirestore(ev.target.result);
+      reader.readAsText(file);
     });
-
-    alert("Upload successful!");
-  }
-
-  document.getElementById("firestoreUploadInput").addEventListener("change", e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => uploadToFirestore(ev.target.result);
-    reader.readAsText(file);
-  });
-</script>
-
+  </script>
 
   <!-- Fallback for users with JavaScript disabled -->
   <noscript>
     <p>This application requires JavaScript to function properly. Please enable JavaScript in your browser settings.</p>
   </noscript>
+
 </body>
 </html>
