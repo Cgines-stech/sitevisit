@@ -1,11 +1,10 @@
-<!-- dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Checklist Dashboard</title>
-  <link rel="stylesheet" href="style2.css" />
+  <link rel="stylesheet" href="style2.css">
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
@@ -25,65 +24,38 @@
 
     const dashboard = document.getElementById("dashboard");
 
-    function createFolderTree(entries) {
-      const tree = {};
-      entries.forEach(entry => {
-        const parts = entry.fileKey.split("/");
-        let current = tree;
-        parts.forEach((part, idx) => {
-          if (!current[part]) current[part] = idx === parts.length - 1 ? [] : {};
-          if (idx === parts.length - 1) current[part].push(entry);
-          else current = current[part];
-        });
-      });
-      return tree;
+    function createRow(entry) {
+      const row = document.createElement("tr");
+      row.className = entry.status === "No" ? "row-error" : "";
+      row.innerHTML = `
+        <td>${entry.fileKey}</td>
+        <td>${entry.item.replace(/Item\s*\d+/i, "").trim()}</td>
+        <td>${entry.status}</td>
+        <td>${entry.comment || "-"}</td>
+      `;
+      return row;
     }
 
-    function renderTree(container, tree) {
-      Object.entries(tree).forEach(([key, value]) => {
-        const folder = document.createElement("div");
-        folder.className = "folder";
+    function createFolderNode(name, parent) {
+      const folderDiv = document.createElement("div");
+      folderDiv.className = "folder";
 
-        const label = document.createElement("div");
-        label.className = "folder-label";
-        label.textContent = `📁 ${key}`;
-        folder.appendChild(label);
+      const label = document.createElement("div");
+      label.className = "folder-label";
+      label.textContent = name;
 
-        const content = document.createElement("div");
-        content.className = "folder-content";
+      const content = document.createElement("div");
+      content.className = "folder-content";
+      content.style.display = "none";
 
-        if (Array.isArray(value)) {
-          const table = document.createElement("table");
-          table.innerHTML = `
-            <tr>
-              <th>Item</th>
-              <th>Status</th>
-              <th>Comment</th>
-            </tr>
-          `;
-          value.forEach(({ item, status, comment }) => {
-            const row = document.createElement("tr");
-            if (status === "No") row.classList.add("row-error");
-            row.innerHTML = `
-              <td>${item.replace(/Item\s*\d+/i, "").trim()}</td>
-              <td>${status}</td>
-              <td>${comment || "-"}</td>
-            `;
-            table.appendChild(row);
-          });
-          content.appendChild(table);
-        } else {
-          renderTree(content, value);
-        }
-
-        label.addEventListener("click", () => {
-          content.style.display = content.style.display === "none" ? "block" : "none";
-        });
-
-        content.style.display = "none";
-        folder.appendChild(content);
-        container.appendChild(folder);
+      label.addEventListener("click", () => {
+        content.style.display = content.style.display === "none" ? "block" : "none";
       });
+
+      folderDiv.appendChild(label);
+      folderDiv.appendChild(content);
+      parent.appendChild(folderDiv);
+      return content;
     }
 
     async function loadDashboard() {
@@ -94,31 +66,84 @@
         const userSection = document.createElement("div");
         userSection.className = "user-section";
 
-        const header = document.createElement("div");
-        header.className = "user-header";
-        header.textContent = `👤 ${data.userId}`;
+        const userHeader = document.createElement("div");
+        userHeader.className = "user-header";
+        userHeader.textContent = `User: ${data.userId}`;
 
-        const content = document.createElement("div");
-        content.className = "user-content";
-        content.style.display = "none";
+        const userContent = document.createElement("div");
+        userContent.style.display = "none";
 
-        header.addEventListener("click", () => {
-          content.style.display = content.style.display === "none" ? "block" : "none";
+        userHeader.addEventListener("click", () => {
+          userContent.style.display = userContent.style.display === "none" ? "block" : "none";
         });
 
+        const checklist = data.checklist || {};
         const entries = [];
-        Object.entries(data.checklist || {}).forEach(([fileKey, items]) => {
+
+        Object.entries(checklist).forEach(([fileKey, items]) => {
           Object.entries(items).forEach(([item, entry]) => {
             entries.push({ fileKey, item, ...entry });
           });
         });
 
         entries.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
-        const folderTree = createFolderTree(entries);
-        renderTree(content, folderTree);
 
-        userSection.appendChild(header);
-        userSection.appendChild(content);
+        // Organize entries by folder/subfolder
+        const folderMap = {};
+        entries.forEach(entry => {
+          const parts = entry.fileKey.split("/");
+          const root = parts[0];
+          const sub = parts.length === 3 ? parts[1] : null;
+          const file = parts.slice(-1)[0];
+
+          if (!folderMap[root]) folderMap[root] = {};
+          const subMap = folderMap[root];
+
+          if (sub) {
+            if (!subMap[sub]) subMap[sub] = [];
+            subMap[sub].push(entry);
+          } else {
+            if (!subMap["__root__"]) subMap["__root__"] = [];
+            subMap["__root__"].push(entry);
+          }
+        });
+
+        Object.entries(folderMap).forEach(([folder, subs]) => {
+          const folderNode = createFolderNode(folder, userContent);
+
+          if (subs["__root__"]) {
+            const table = document.createElement("table");
+            table.innerHTML = `
+              <tr>
+                <th>File</th>
+                <th>Item</th>
+                <th>Status</th>
+                <th>Comment</th>
+              </tr>
+            `;
+            subs["__root__"].forEach(entry => table.appendChild(createRow(entry)));
+            folderNode.appendChild(table);
+          }
+
+          Object.entries(subs).forEach(([sub, items]) => {
+            if (sub === "__root__") return;
+            const subNode = createFolderNode(sub, folderNode);
+            const table = document.createElement("table");
+            table.innerHTML = `
+              <tr>
+                <th>File</th>
+                <th>Item</th>
+                <th>Status</th>
+                <th>Comment</th>
+              </tr>
+            `;
+            items.forEach(entry => table.appendChild(createRow(entry)));
+            subNode.appendChild(table);
+          });
+        });
+
+        userSection.appendChild(userHeader);
+        userSection.appendChild(userContent);
         dashboard.appendChild(userSection);
       });
     }

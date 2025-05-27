@@ -40,3 +40,33 @@ th {
   background-color: #f1f1f1;
   color: #333;
 }
+
+.user-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  cursor: pointer;
+  background-color: #e0f7fa;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.folder {
+  margin-left: 20px;
+}
+
+.folder-label {
+  font-weight: bold;
+  cursor: pointer;
+  margin: 10px 0 5px;
+  color: #007b8a;
+}
+
+.folder-content {
+  margin-left: 20px;
+  display: none;
+}
+
+.row-error {
+  background-color: #ffe6e6;
+}
