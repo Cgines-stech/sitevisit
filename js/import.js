@@ -11,27 +11,33 @@ export function importChecklist() {
     const newData = {};
 
     lines.forEach(line => {
-      const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
+      const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?$/i);
       if (!match) return;
 
       const fileKey = match[1]?.trim();
       const itemKey = match[2]?.trim();
       const status = match[3];
       const comment = match[4] || "";
+      const link = match[5] || "";
 
       if (!fileKey || !itemKey || !status) return;
       if (!newData[fileKey]) newData[fileKey] = {};
-      newData[fileKey][itemKey] = { status, comment };
+      newData[fileKey][itemKey] = {
+        status,
+        comment,
+        ...(link && { link })
+      };
     });
 
     localStorage.setItem("checklist", JSON.stringify(newData));
 
-    // Refresh UI
+    // Rebuild nav tree and refresh icons
     buildNavTree();
-    flatFileList.forEach(fileKey => updateNavStatus(fileKey));
-    loadChecklist();
+    setTimeout(() => {
+      flatFileList.forEach(fileKey => updateNavStatus(fileKey));
+    }, 50);
 
-    alert("Checklist imported successfully.");
+    alert("Checklist imported successfully!");
   };
 
   reader.readAsText(file);

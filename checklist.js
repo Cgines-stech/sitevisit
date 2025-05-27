@@ -49,6 +49,14 @@ function loadChecklist() {
   textarea.setAttribute("aria-describedby", "comment-help");
   checklistContainer.appendChild(textarea);
 
+  // 🔗 If there's a link, show it below the comment box
+  if (itemData.link) {
+    const linkEl = document.createElement("div");
+    linkEl.className = "checklist-link";
+    linkEl.innerHTML = `<a href="${itemData.link}" target="_blank" rel="noopener">🔗 View related link</a>`;
+    checklistContainer.appendChild(linkEl);
+  }
+
   // Save on interaction
   checklistContainer.querySelectorAll('input[name="status"]').forEach(input => {
     input.addEventListener("change", () => {
@@ -110,8 +118,6 @@ buildNavTree();
 setTimeout(() => {
   flatFileList.forEach(fileKey => updateNavStatus(fileKey));
 }, 50);
-
-alert("Checklist imported successfully!");
 
         } catch (err) {
           alert("Failed to import checklist. Ensure it's valid JSON or exported TXT format.");

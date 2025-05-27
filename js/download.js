@@ -1,7 +1,5 @@
 /*download.js*/
 
-console.log("✅ download.js module loaded");
-
 export function downloadChecklist() {
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
   const lines = [];
@@ -16,7 +14,8 @@ export function downloadChecklist() {
         if (entry?.status?.trim()) {
           const status = entry.status;
           const comment = entry.comment ? ` (Comment: ${entry.comment})` : "";
-          lines.push(`${fileKey}: ${item} = ${status}${comment}`);
+const link = entry.link ? ` (Link: ${entry.link})` : "";
+lines.push(`${fileKey}: ${item} = ${status}${comment}${link}`);
         }
       });
     });
