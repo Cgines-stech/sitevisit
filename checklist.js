@@ -6,10 +6,17 @@ function saveChecklistItem() {
 
   const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
   const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
+
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
 
   if (!allData[fileKey]) allData[fileKey] = {};
-  allData[fileKey][itemKey] = { status: selectedStatus, comment };
+  const existing = allData[fileKey][itemKey] || {};
+
+  allData[fileKey][itemKey] = {
+    status: selectedStatus,
+    comment,
+    ...(existing.link && { link: existing.link })  // ✅ preserve link if it exists
+  };
 
   localStorage.setItem("checklist", JSON.stringify(allData));
 }
@@ -51,11 +58,11 @@ function loadChecklist() {
 
   // 🔗 If there's a link, show it below the comment box
   if (itemData.link) {
-    const linkEl = document.createElement("div");
-    linkEl.className = "checklist-link";
-    linkEl.innerHTML = `<a href="${itemData.link}" target="_blank" rel="noopener">🔗 View related link</a>`;
-    checklistContainer.appendChild(linkEl);
-  }
+  const linkEl = document.createElement("div");
+  linkEl.className = "checklist-link";
+  linkEl.innerHTML = `<a href="${itemData.link}" target="_blank" rel="noopener">🔗 View related link</a>`;
+  checklistContainer.appendChild(linkEl);
+}
 
   // Save on interaction
   checklistContainer.querySelectorAll('input[name="status"]').forEach(input => {
