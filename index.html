@@ -64,8 +64,8 @@
       window.addEventListener("beforeunload", saveChecklistItem);
 
       // Button event bindings
-      // document.getElementById("prevBtn").addEventListener("click", prevFile);
-      // document.getElementById("nextBtn").addEventListener("click", nextFile);
+      document.getElementById("prevBtn").addEventListener("click", prevFile);
+      document.getElementById("nextBtn").addEventListener("click", nextFile);
       document.getElementById("downloadBtn").addEventListener("click", () => {
   if (typeof window.downloadChecklist === "function") {
     window.downloadChecklist();

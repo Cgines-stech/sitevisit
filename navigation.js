@@ -1,3 +1,4 @@
+/* navigition.js */
 function buildNavTree() {
   folderListEl.innerHTML = "";
   flatFileList = [];
@@ -37,8 +38,6 @@ function buildNavTree() {
           const displayName = file.replace(/\.docx\.pdf$/, '').replace(/\.pdf$/, '');
 
           flatFileList.push(displayKey);
-          localStorage.setItem("flatFileList", JSON.stringify(flatFileList));
-
 
           const fileLi = document.createElement("li");
           fileLi.className = "file-entry";
@@ -54,7 +53,7 @@ function buildNavTree() {
           };
 
           rootUl.appendChild(fileLi);
-          updateNavStatus(displayKey);
+          updateNavStatus(displayKey);  // ✅ moved below append
         });
 
         return;
@@ -94,7 +93,7 @@ function buildNavTree() {
         };
 
         subUl.appendChild(fileLi);
-        updateNavStatus(displayKey);
+        updateNavStatus(displayKey);  // ✅ moved below append
       });
 
       subLi.appendChild(subUl);
@@ -106,7 +105,8 @@ function buildNavTree() {
     folderListEl.appendChild(rootLi);
   });
 
-  flatFileList.forEach(fileKey => updateNavStatus(fileKey));
+  // ✅ Save the full file list once
+  localStorage.setItem("flatFileList", JSON.stringify(flatFileList));
 }
 
 function updateNavStatus(fileKey) {
