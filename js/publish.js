@@ -1,4 +1,4 @@
-/*import.js*/
+/*publish.js*/
 import { showToast } from "./toast.js";
 
 export function publishChecklist() {
