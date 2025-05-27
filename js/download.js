@@ -30,6 +30,7 @@ lines.push(`${fileKey}: ${item} = ${status}${comment}${link}${doc}`);
   const a = document.createElement("a");
   a.href = url;
   const userId = document.getElementById("userIdInput")?.value?.trim() || "checklist";
+  lines.unshift(`User ID: ${userId}`);
   a.download = `${userId}_backup.txt`;
   a.style.display = "none";
   document.body.appendChild(a);
