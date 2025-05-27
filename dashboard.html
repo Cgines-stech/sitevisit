@@ -1,43 +1,13 @@
+<!-- dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Checklist Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style2.css" />
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-    }
-    .user-section {
-      background: #fff;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .user-section h2 {
-      margin-top: 0;
-      color: teal;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
-    }
-    th {
-      background-color: #f1f1f1;
-    }
-  </style>
 </head>
 <body>
   <h1>User Checklist Dashboard</h1>
@@ -55,53 +25,101 @@
 
     const dashboard = document.getElementById("dashboard");
 
+    function createFolderTree(entries) {
+      const tree = {};
+      entries.forEach(entry => {
+        const parts = entry.fileKey.split("/");
+        let current = tree;
+        parts.forEach((part, idx) => {
+          if (!current[part]) current[part] = idx === parts.length - 1 ? [] : {};
+          if (idx === parts.length - 1) current[part].push(entry);
+          else current = current[part];
+        });
+      });
+      return tree;
+    }
+
+    function renderTree(container, tree) {
+      Object.entries(tree).forEach(([key, value]) => {
+        const folder = document.createElement("div");
+        folder.className = "folder";
+
+        const label = document.createElement("div");
+        label.className = "folder-label";
+        label.textContent = `📁 ${key}`;
+        folder.appendChild(label);
+
+        const content = document.createElement("div");
+        content.className = "folder-content";
+
+        if (Array.isArray(value)) {
+          const table = document.createElement("table");
+          table.innerHTML = `
+            <tr>
+              <th>Item</th>
+              <th>Status</th>
+              <th>Comment</th>
+            </tr>
+          `;
+          value.forEach(({ item, status, comment }) => {
+            const row = document.createElement("tr");
+            if (status === "No") row.classList.add("row-error");
+            row.innerHTML = `
+              <td>${item.replace(/Item\s*\d+/i, "").trim()}</td>
+              <td>${status}</td>
+              <td>${comment || "-"}</td>
+            `;
+            table.appendChild(row);
+          });
+          content.appendChild(table);
+        } else {
+          renderTree(content, value);
+        }
+
+        label.addEventListener("click", () => {
+          content.style.display = content.style.display === "none" ? "block" : "none";
+        });
+
+        content.style.display = "none";
+        folder.appendChild(content);
+        container.appendChild(folder);
+      });
+    }
+
     async function loadDashboard() {
       const snapshot = await db.collection("checklists").get();
 
       snapshot.forEach(doc => {
         const data = doc.data();
-        const section = document.createElement("div");
-        section.className = "user-section";
+        const userSection = document.createElement("div");
+        userSection.className = "user-section";
 
-        const title = document.createElement("h2");
-        title.textContent = `User: ${data.userId}`;
-        section.appendChild(title);
+        const header = document.createElement("div");
+        header.className = "user-header";
+        header.textContent = `👤 ${data.userId}`;
 
-        const table = document.createElement("table");
-        table.innerHTML = `
-          <tr>
-            <th>File</th>
-            <th>Item</th>
-            <th>Status</th>
-            <th>Comment</th>
-          </tr>
-        `;
+        const content = document.createElement("div");
+        content.className = "user-content";
+        content.style.display = "none";
 
-        const checklist = data.checklist || {};
+        header.addEventListener("click", () => {
+          content.style.display = content.style.display === "none" ? "block" : "none";
+        });
+
         const entries = [];
-
-        Object.entries(checklist).forEach(([fileKey, items]) => {
+        Object.entries(data.checklist || {}).forEach(([fileKey, items]) => {
           Object.entries(items).forEach(([item, entry]) => {
             entries.push({ fileKey, item, ...entry });
           });
         });
 
-        // Sort by fileKey (e.g., Standard1 before Standard2)
         entries.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
+        const folderTree = createFolderTree(entries);
+        renderTree(content, folderTree);
 
-        entries.forEach(({ fileKey, item, status, comment }) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${fileKey}</td>
-            <td>${item.replace(/Item\s*\d+/i, "").trim()}</td>
-            <td>${status}</td>
-            <td>${comment || "-"}</td>
-          `;
-          table.appendChild(row);
-        });
-
-        section.appendChild(table);
-        dashboard.appendChild(section);
+        userSection.appendChild(header);
+        userSection.appendChild(content);
+        dashboard.appendChild(userSection);
       });
     }
 
