@@ -28,9 +28,9 @@ export function publishChecklist() {
         }
       }
 
-      const value = status
-        ? (comment ? `${status} (Comment: ${comment})` : status)
-        : "";
+      let value = status;
+if (comment) value += ` (Comment: ${comment})`;
+if (entry?.link) value += ` (Link: ${entry.link})`;
 
       lines.push(`${fileKey}: ${value}`);
     });

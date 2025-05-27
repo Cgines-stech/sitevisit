@@ -17,7 +17,6 @@ const checklistItems = [
   "2.A.2"
 ];
 
-
 let flatFileList = [];
 let currentFileIndex = 0;
 let currentItem = 0;
