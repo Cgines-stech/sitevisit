@@ -113,7 +113,7 @@
         entries.forEach(entry => {
           const parts = entry.fileKey.split("/");
           const root = parts[0];
-          const sub = parts.length === 3 ? parts[1] : null;
+          const sub = parts.length >= 3 ? parts[1] : null;
 
           if (!folderMap[root]) folderMap[root] = {};
           const subMap = folderMap[root];
