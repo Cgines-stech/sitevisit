@@ -26,7 +26,8 @@ lines.push(`${fileKey}: ${item} = ${status}${comment}${link}`);
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "checklist-backup.txt";
+  const userId = document.getElementById("userIdInput")?.value?.trim() || "checklist";
+  a.download = `${userId}_backup.txt`;
   a.style.display = "none";
   document.body.appendChild(a);
   a.click();

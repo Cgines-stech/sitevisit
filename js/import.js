@@ -8,6 +8,18 @@ export function importChecklist() {
   reader.onload = function (e) {
     const content = e.target.result;
     const lines = content.split("\n").filter(Boolean);
+
+    // ✅ Extract and set User ID if available
+    const userIdLine = lines.find(line => line.toLowerCase().startsWith("user id:"));
+    if (userIdLine) {
+      const [, idPart] = userIdLine.split(":");
+      const userIdValue = idPart?.trim();
+      if (userIdValue) {
+        const userIdInput = document.getElementById("userIdInput");
+        if (userIdInput) userIdInput.value = userIdValue;
+      }
+    }
+
     const newData = {};
 
     lines.forEach(line => {
@@ -31,7 +43,6 @@ export function importChecklist() {
 
     localStorage.setItem("checklist", JSON.stringify(newData));
 
-    // Rebuild nav tree and refresh icons
     buildNavTree();
     setTimeout(() => {
       flatFileList.forEach(fileKey => updateNavStatus(fileKey));
