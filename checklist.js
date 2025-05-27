@@ -67,43 +67,7 @@ window.loadChecklist = loadChecklist;
 window.saveChecklistItem = saveChecklistItem;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ✅ DOWNLOAD BUTTON LOGIC
-  const downloadBtn = document.getElementById("downloadBtn");
-if (downloadBtn) {
-  downloadBtn.addEventListener("click", () => {
-    const checklistData = JSON.parse(localStorage.getItem("checklist") || "{}");
-    const flatFileList = JSON.parse(localStorage.getItem("flatFileList") || "[]");
-
-    if (!Object.keys(checklistData).length || !flatFileList.length) {
-      alert("No checklist data found to download.");
-      return;
-    }
-
-    let output = "";
-    flatFileList.forEach(fileKey => {
-      const fileItems = checklistData[fileKey];
-      if (!fileItems) return;
-      for (const item in fileItems) {
-        const { status } = fileItems[item];
-        const keyPath = `${fileKey}/${item}`.replace(/\/+/g, "/");
-        output += `${keyPath}: ${status?.trim() || ""}\n`;
-      }
-    });
-
-    const blob = new Blob([output], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "checklist_export.txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  });
-}
-
-
-  // ✅ UPLOAD FILE IMPORT (TXT FORMAT: path/to/file.pdf: Yes)
+  // ✅ IMPORT FILE (TXT or JSON)
   const importFileInput = document.getElementById("importFile");
   if (importFileInput) {
     importFileInput.addEventListener("change", (event) => {
@@ -121,24 +85,21 @@ if (downloadBtn) {
               throw new Error("Invalid checklist JSON structure.");
             }
           } else {
-            // Parse TXT: format = path/to/file/item.pdf: Yes
+            // Parse TXT: format = path/to/file: item = Yes (Comment: ...)
             data = {};
             const lines = content.split("\n");
             for (const line of lines) {
-              const [fullPath, statusRaw] = line.split(":");
-              if (!fullPath || !statusRaw) continue;
-              const cleanedPath = fullPath.trim();
-              const status = statusRaw ? statusRaw.trim() : "";
-              
+              const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
+              if (!match) continue;
 
-              const parts = cleanedPath.split("/");
-              const item = parts.pop();
-              const fileKey = parts.join("/");
+              const fileKey = match[1]?.trim();
+              const itemKey = match[2]?.trim();
+              const status = match[3];
+              const comment = match[4] || "";
 
-              if ((status || "").trim() !== "") {
-  if (!data[fileKey]) data[fileKey] = {};
-  data[fileKey][item] = { status, comment: "" };
-}
+              if (!fileKey || !itemKey || !status) continue;
+              if (!data[fileKey]) data[fileKey] = {};
+              data[fileKey][itemKey] = { status, comment };
             }
           }
 
