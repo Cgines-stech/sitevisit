@@ -6,10 +6,17 @@ function saveChecklistItem() {
 
   const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
   const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
+
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
 
   if (!allData[fileKey]) allData[fileKey] = {};
-  allData[fileKey][itemKey] = { status: selectedStatus, comment };
+  const existing = allData[fileKey][itemKey] || {};
+
+  allData[fileKey][itemKey] = {
+    status: selectedStatus,
+    comment,
+    ...(existing.link && { link: existing.link })  // ✅ preserve link if it exists
+  };
 
   localStorage.setItem("checklist", JSON.stringify(allData));
 }
@@ -97,17 +104,22 @@ document.addEventListener("DOMContentLoaded", () => {
             data = {};
             const lines = content.split("\n");
             for (const line of lines) {
-              const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?$/i);
+              const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?$/i);
               if (!match) continue;
 
               const fileKey = match[1]?.trim();
-              const itemKey = match[2]?.trim();
-              const status = match[3];
-              const comment = match[4] || "";
+const itemKey = match[2]?.trim();
+const status = match[3];
+const comment = match[4] || "";
+const link = match[5] || "";
 
-              if (!fileKey || !itemKey || !status) continue;
-              if (!data[fileKey]) data[fileKey] = {};
-              data[fileKey][itemKey] = { status, comment };
+if (!fileKey || !itemKey || !status) continue;
+if (!data[fileKey]) data[fileKey] = {};
+data[fileKey][itemKey] = {
+  status,
+  comment,
+  ...(link && { link })
+};
             }
           }
 
