@@ -14,6 +14,7 @@
   <div id="dashboard"></div>
 
   <script>
+    
     const firebaseConfig = {
       apiKey: "AIzaSyDANwGnTgz2Sd-VS-9tjrsT5FvsUpe2NQc",
       authDomain: "sitevisit2025-6a6ce.firebaseapp.com",
@@ -25,27 +26,6 @@
 
     const dashboard = document.getElementById("dashboard");
 
-    const expectedFileCounts = {
-      "Standard1": 11,
-      "Standard2": 941, // 21 folders * 46 each
-      "__defaultSubfolder__": 46
-    };
-
-    function computeFixedCompletionPercentage(folder, entries) {
-      const expectedCount = expectedFileCounts[folder] || expectedFileCounts["__defaultSubfolder__"] || 0;
-      const uniqueCompletedFiles = new Set();
-
-      entries.forEach(e => {
-        if (e.status === "Yes" || e.status === "N/A") {
-          uniqueCompletedFiles.add(e.fileKey);
-        }
-      });
-
-      return expectedCount > 0
-        ? Math.round((uniqueCompletedFiles.size / expectedCount) * 100)
-        : 0;
-    }
-
     function createRow(entry) {
       const row = document.createElement("tr");
       row.className = entry.status === "No" ? "row-error" : "";
@@ -55,6 +35,12 @@
         <td>${entry.comment || "-"}</td>
       `;
       return row;
+    }
+
+    function calculateCompletionPercentage(entries) {
+      const total = entries.length;
+      const completed = entries.filter(e => e.status === "Yes" || e.status === "N/A").length;
+      return total ? Math.round((completed / total) * 100) : 0;
     }
 
     function createFolderNode(name, parent) {
@@ -78,6 +64,29 @@
       parent.appendChild(folderDiv);
       return content;
     }
+
+    // Fixed number of files per folder/subfolder
+const expectedFileCounts = {
+  "Standard1": 11,
+  "Standard2/Advanced Emergency Medical Technician": 46
+};
+
+function computeFixedCompletionPercentage(folder, entries) {
+  const key = folder.includes("/") ? folder : `${folder}`;
+  const expectedCount = expectedFileCounts[key] || 0;
+
+  const uniqueCompletedFiles = new Set();
+
+  entries.forEach(e => {
+    if (e.status === "Yes" || e.status === "N/A") {
+      uniqueCompletedFiles.add(e.fileKey);
+    }
+  });
+
+  return expectedCount > 0
+    ? Math.round((uniqueCompletedFiles.size / expectedCount) * 100)
+    : 0;
+}
 
     async function loadDashboard() {
       const snapshot = await db.collection("checklists").get();
@@ -113,7 +122,7 @@
         entries.forEach(entry => {
           const parts = entry.fileKey.split("/");
           const root = parts[0];
-          const sub = parts.length >= 3 ? parts[1] : null;
+          const sub = parts.length === 3 ? parts[1] : null;
 
           if (!folderMap[root]) folderMap[root] = {};
           const subMap = folderMap[root];
@@ -128,25 +137,32 @@
         });
 
         Object.entries(folderMap).forEach(([folder, subs]) => {
-          let totalEntries = [];
+          const flatEntries = Object.values(subs).flat();
+          const percentComplete = computeFixedCompletionPercentage(
+  folder === "Standard2" && subs["Advanced Emergency Medical Technician"]
+    ? "Standard2/Advanced Emergency Medical Technician"
+    : folder,
+  flatEntries
+);
 
-          const folderNode = createFolderNode(folder, userContent);
+          const folderNode = createFolderNode(`${folder} (${percentComplete}% complete)`, userContent);
+
+          if (subs["__root__"]) {
+            const table = document.createElement("table");
+            table.innerHTML = `
+              <tr>
+                <th>File</th>
+                <th>Status</th>
+                <th>Comment</th>
+              </tr>
+            `;
+            subs["__root__"].forEach(entry => table.appendChild(createRow(entry)));
+            folderNode.appendChild(table);
+          }
 
           Object.entries(subs).forEach(([sub, items]) => {
-            const isSubfolder = sub !== "__root__";
-            totalEntries.push(...items);
-
-            const percent = computeFixedCompletionPercentage(
-              folder === "Standard2" && isSubfolder
-                ? "__defaultSubfolder__"
-                : folder,
-              items
-            );
-
-            const subNode = isSubfolder
-              ? createFolderNode(`${sub} (${percent}% complete)`, folderNode)
-              : folderNode;
-
+            if (sub === "__root__") return;
+            const subNode = createFolderNode(sub, folderNode);
             const table = document.createElement("table");
             table.innerHTML = `
               <tr>
@@ -158,17 +174,6 @@
             items.forEach(entry => table.appendChild(createRow(entry)));
             subNode.appendChild(table);
           });
-
-          // Overall Standard2 progress
-          if (folder === "Standard2") {
-            const totalPercent = computeFixedCompletionPercentage("Standard2", totalEntries);
-            folderNode.querySelector(".folder-label").textContent = `Standard2 (Overall: ${totalPercent}% complete)`;
-          }
-
-          if (folder === "Standard1" && subs["__root__"]) {
-            const percent = computeFixedCompletionPercentage("Standard1", subs["__root__"]);
-            folderNode.querySelector(".folder-label").textContent = `Standard1 (${percent}% complete)`;
-          }
         });
 
         userSection.appendChild(userHeader);
