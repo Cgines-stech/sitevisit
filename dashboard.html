@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Checklist Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .user-section {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .user-section h2 {
+      margin-top: 0;
+      color: teal;
+    }
+    .entry {
+      padding: 6px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .file-key {
+      font-weight: bold;
+    }
+    .status {
+      color: #333;
+    }
+    .comment {
+      color: #555;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>User Checklist Dashboard</h1>
+  <div id="dashboard"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDANwGnTgz2Sd-VS-9tjrsT5FvsUpe2NQc",
+      authDomain: "sitevisit2025-6a6ce.firebaseapp.com",
+      projectId: "sitevisit2025-6a6ce"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const dashboard = document.getElementById("dashboard");
+
+    async function loadDashboard() {
+      const snapshot = await db.collection("checklists").get();
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const section = document.createElement("div");
+        section.className = "user-section";
+
+        const title = document.createElement("h2");
+        title.textContent = `User: ${data.userId}`;
+        section.appendChild(title);
+
+        const checklist = data.checklist || {};
+        Object.entries(checklist).forEach(([fileKey, items]) => {
+          Object.entries(items).forEach(([item, entry]) => {
+            const div = document.createElement("div");
+            div.className = "entry";
+            div.innerHTML = `
+              <div class="file-key">${fileKey} → ${item}</div>
+              <div class="status">Status: ${entry.status}</div>
+              <div class="comment">Comment: ${entry.comment || "-"}</div>
+            `;
+            section.appendChild(div);
+          });
+        });
+
+        dashboard.appendChild(section);
+      });
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
