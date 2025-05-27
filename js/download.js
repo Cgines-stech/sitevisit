@@ -11,7 +11,8 @@ export function downloadChecklist() {
 
       checklistItems.forEach(item => {
         const entry = itemData[item];
-        if (entry?.status?.trim()) {
+        if (entry?.status?.trim() || entry?.link || entry?.docLink) {
+
           const status = entry.status;
           const comment = entry.comment ? ` (Comment: ${entry.comment})` : "";
 const link = entry.link ? ` (Link: ${entry.link})` : "";
