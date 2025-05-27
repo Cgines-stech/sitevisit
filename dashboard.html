@@ -14,6 +14,7 @@
   <div id="dashboard"></div>
 
   <script>
+    
     const firebaseConfig = {
       apiKey: "AIzaSyDANwGnTgz2Sd-VS-9tjrsT5FvsUpe2NQc",
       authDomain: "sitevisit2025-6a6ce.firebaseapp.com",
@@ -63,6 +64,29 @@
       parent.appendChild(folderDiv);
       return content;
     }
+
+    // Fixed number of files per folder/subfolder
+const expectedFileCounts = {
+  "Standard1": 11,
+  "Standard2/Advanced Emergency Medical Technician": 46
+};
+
+function computeFixedCompletionPercentage(folder, entries) {
+  const key = folder.includes("/") ? folder : `${folder}`;
+  const expectedCount = expectedFileCounts[key] || 0;
+
+  const uniqueCompletedFiles = new Set();
+
+  entries.forEach(e => {
+    if (e.status === "Yes" || e.status === "N/A") {
+      uniqueCompletedFiles.add(e.fileKey);
+    }
+  });
+
+  return expectedCount > 0
+    ? Math.round((uniqueCompletedFiles.size / expectedCount) * 100)
+    : 0;
+}
 
     async function loadDashboard() {
       const snapshot = await db.collection("checklists").get();
@@ -114,7 +138,13 @@
 
         Object.entries(folderMap).forEach(([folder, subs]) => {
           const flatEntries = Object.values(subs).flat();
-          const percentComplete = calculateCompletionPercentage(flatEntries);
+          const percentComplete = computeFixedCompletionPercentage(
+  folder === "Standard2" && subs["Advanced Emergency Medical Technician"]
+    ? "Standard2/Advanced Emergency Medical Technician"
+    : folder,
+  flatEntries
+);
+
           const folderNode = createFolderNode(`${folder} (${percentComplete}% complete)`, userContent);
 
           if (subs["__root__"]) {
