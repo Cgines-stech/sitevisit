@@ -31,9 +31,9 @@ function loadChecklist() {
   const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
   const itemData = allData[fileKey]?.[itemKey] || {};
 
-  const label = document.createElement("h4");
-  label.textContent = itemKey;
-  checklistContainer.appendChild(label);
+  //const label = document.createElement("h4");
+  //label.textContent = itemKey;
+  //checklistContainer.appendChild(label);
 
   ["Yes", "No", "N/A"].forEach(opt => {
     const wrapper = document.createElement("label");
