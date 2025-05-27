@@ -15,7 +15,7 @@ function saveChecklistItem() {
   allData[fileKey][itemKey] = {
     status: selectedStatus,
     comment,
-    ...(existing.link && { link: existing.link })  // ✅ preserve link if it exists
+    ...(existing.docLink && { docLink: existing.docLink })  // ✅ preserve link if it exists
   };
 
   localStorage.setItem("checklist", JSON.stringify(allData));
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data = {};
             const lines = content.split("\n");
             for (const line of lines) {
-              const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?$/i);
+              const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?(?: \(Doc: (https?:\/\/.+?)\))?$/i);
               if (!match) continue;
 
               const fileKey = match[1]?.trim();
@@ -113,6 +113,8 @@ const itemKey = match[2]?.trim();
 const status = match[3];
 const comment = match[4] || "";
 const link = match[5] || "";
+const docLink = match[6] || "";
+
 
 if (!fileKey || !itemKey || !status) continue;
 if (!data[fileKey]) data[fileKey] = {};
