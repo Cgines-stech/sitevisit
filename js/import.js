@@ -23,7 +23,7 @@ export function importChecklist() {
     const newData = {};
 
     lines.forEach(line => {
-      const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?$/i);
+      const match = line.match(/^(.+?):\s*(.+?)\s*=\s*(Yes|No|N\/A)(?: \(Comment: (.+?)\))?(?: \(Link: (https?:\/\/.+?)\))?(?: \(Doc: (https?:\/\/.+?)\))?$/i);
       if (!match) return;
 
       const fileKey = match[1]?.trim();
@@ -31,14 +31,17 @@ export function importChecklist() {
       const status = match[3];
       const comment = match[4] || "";
       const link = match[5] || "";
+      const docLink = match[6] || "";
+
 
       if (!fileKey || !itemKey || !status) return;
       if (!newData[fileKey]) newData[fileKey] = {};
       newData[fileKey][itemKey] = {
-        status,
-        comment,
-        ...(link && { link })
-      };
+  status,
+  comment,
+  ...(link && { link }),
+  ...(docLink && { docLink })
+};
     });
 
     localStorage.setItem("checklist", JSON.stringify(newData));

@@ -14,7 +14,7 @@ function setFile(pdfPath, keyForChecklist) {
   allData[previousFileKey][itemKey] = {
     status: selectedStatus,
     comment,
-    ...(existing.link && { link: existing.link })
+    ...(existing.docLink && { docLink: existing.docLink })
   };
 
   localStorage.setItem("checklist", JSON.stringify(allData));

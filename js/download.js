@@ -15,7 +15,10 @@ export function downloadChecklist() {
           const status = entry.status;
           const comment = entry.comment ? ` (Comment: ${entry.comment})` : "";
 const link = entry.link ? ` (Link: ${entry.link})` : "";
-lines.push(`${fileKey}: ${item} = ${status}${comment}${link}`);
+const doc = entry.docLink ? ` (Doc: ${entry.docLink})` : "";
+
+lines.push(`${fileKey}: ${item} = ${status}${comment}${link}${doc}`);
+
         }
       });
     });

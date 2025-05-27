@@ -57,12 +57,13 @@ function loadChecklist() {
   checklistContainer.appendChild(textarea);
 
   // 🔗 If there's a link, show it below the comment box
-  if (itemData.link) {
-  const linkEl = document.createElement("div");
-  linkEl.className = "checklist-link";
-  linkEl.innerHTML = `<a href="${itemData.link}" target="_blank" rel="noopener">🔗 View related link</a>`;
-  checklistContainer.appendChild(linkEl);
+  if (itemData.docLink) {
+  const docEl = document.createElement("div");
+  docEl.className = "checklist-link";
+  docEl.innerHTML = `<a href="${itemData.docLink}" target="_blank" rel="noopener">📄 DOC FILE</a>`;
+  checklistContainer.appendChild(docEl);
 }
+
 
   // Save on interaction
   checklistContainer.querySelectorAll('input[name="status"]').forEach(input => {
