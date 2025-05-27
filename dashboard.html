@@ -24,19 +24,18 @@
       margin-top: 0;
       color: teal;
     }
-    .entry {
-      padding: 6px 0;
-      border-bottom: 1px solid #eee;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
-    .file-key {
-      font-weight: bold;
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
     }
-    .status {
-      color: #333;
-    }
-    .comment {
-      color: #555;
-      font-style: italic;
+    th {
+      background-color: #f1f1f1;
     }
   </style>
 </head>
@@ -68,20 +67,40 @@
         title.textContent = `User: ${data.userId}`;
         section.appendChild(title);
 
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <tr>
+            <th>File</th>
+            <th>Item</th>
+            <th>Status</th>
+            <th>Comment</th>
+          </tr>
+        `;
+
         const checklist = data.checklist || {};
+        const entries = [];
+
         Object.entries(checklist).forEach(([fileKey, items]) => {
           Object.entries(items).forEach(([item, entry]) => {
-            const div = document.createElement("div");
-            div.className = "entry";
-            div.innerHTML = `
-              <div class="file-key">${fileKey} → ${item}</div>
-              <div class="status">Status: ${entry.status}</div>
-              <div class="comment">Comment: ${entry.comment || "-"}</div>
-            `;
-            section.appendChild(div);
+            entries.push({ fileKey, item, ...entry });
           });
         });
 
+        // Sort by fileKey (e.g., Standard1 before Standard2)
+        entries.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
+
+        entries.forEach(({ fileKey, item, status, comment }) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${fileKey}</td>
+            <td>${item.replace(/Item\s*\d+/i, "").trim()}</td>
+            <td>${status}</td>
+            <td>${comment || "-"}</td>
+          `;
+          table.appendChild(row);
+        });
+
+        section.appendChild(table);
         dashboard.appendChild(section);
       });
     }
