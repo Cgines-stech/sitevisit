@@ -1,14 +1,20 @@
 /*data.js*/
 const folders = {
+  "Conditions": [
+    "0.A.1 Worksheet A.1.docx.pdf",
+    "0.A.2.docx.pdf",
+    "0.A.3.docx.pdf"
+  ],
   "Standard1": [
     "1.1.docx.pdf",
-    "1.2.docx.pdf"
+    "1.2.docx.pdf",
+    "1.3.docx.pdf"
   ],
   "Standard2/Advanced Emergency Medical Technician": [
   "2.A.1.docx.pdf",
   "2.A.2.docx.pdf",
   "2.A.3.docx.pdf"
-]
+  ]
 };
 
 const checklistItems = [
