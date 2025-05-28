@@ -77,7 +77,9 @@
 
     const expectedFileCounts = {
       "Standard1": 11,
-      "Standard2/Advanced Emergency Medical Technician": 46
+      "Standard2/Advanced Emergency Medical Technician": 46,
+      "Standard2/Automation Technology": 46,
+      "Standard3": 24,
     };
 
     function computeFixedCompletionPercentage(folder, entries) {
@@ -199,7 +201,10 @@
 
           Object.entries(subs).forEach(([sub, items]) => {
             if (sub === "__root__") return;
-            const subNode = createFolderNode(sub, folderNode);
+            const subPath = `${folder}/${sub}`;
+const subPercent = computeFixedCompletionPercentage(subPath, items);
+const subNode = createFolderNode(`${sub} (${subPercent}% complete)`, folderNode);
+
             const table = document.createElement("table");
             table.innerHTML = `
               <tr>
