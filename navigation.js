@@ -133,12 +133,28 @@ function updateNavStatus(fileKey) {
 }
 
 function highlightCurrentFile(selectedKey) {
+  // Clear previous highlights
   document.querySelectorAll(".file-entry").forEach(el => {
     el.classList.remove("active");
   });
 
   const selected = document.getElementById(`nav-${selectedKey}`);
-  if (selected) selected.classList.add("active");
+  if (!selected) return;
+
+  // Highlight the current item
+  selected.classList.add("active");
+
+  // Expand any collapsed parent <ul> elements
+  let parent = selected.parentElement;
+  while (parent && parent !== document.body) {
+    if (parent.tagName === "UL" && parent.style.display === "none") {
+      parent.style.display = "block";
+    }
+    parent = parent.parentElement;
+  }
+
+  // Scroll it into view if not visible
+  selected.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 window.buildNavTree = buildNavTree;
