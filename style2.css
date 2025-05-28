@@ -133,3 +133,50 @@ th {
 .hidden {
   display: none;
 }
+
+#dashboardContainer {
+  display: flex;
+  gap: 20px;
+}
+
+#dashboard {
+  flex: 0 0 70%;
+}
+
+#errorPanel {
+  flex: 0 0 30%;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: #fff7f7;
+  padding: 15px;
+  border-left: 4px solid #ff4d4d;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+#errorPanel h2 {
+  margin-top: 0;
+  font-size: 1.1rem;
+  color: #cc0000;
+  margin-bottom: 10px;
+}
+
+#errorList {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#errorList li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #ffe5e5;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #8b0000;
+  transition: background-color 0.2s ease;
+}
+
+#errorList li:hover {
+  background-color: #fdd;
+  text-decoration: underline;
+}

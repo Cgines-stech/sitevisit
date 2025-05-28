@@ -11,6 +11,7 @@
 </head>
 <body>
   <h1>User Checklist Dashboard</h1>
+  <div id="dashboardContainer">
   <div id="dashboard"></div>
 
   <!-- Error Panel -->
@@ -18,14 +19,15 @@
     <h2>⚠️ Issues Marked "No"</h2>
     <ul id="errorList"></ul>
   </div>
+</div>
 
-  <!-- Modal for showing comments -->
-  <div id="commentModal" class="hidden">
-    <div class="modal-content">
-      <span id="closeModal">&times;</span>
-      <p id="commentText"></p>
-    </div>
+<!-- Modal for showing comments -->
+<div id="commentModal" class="hidden">
+  <div class="modal-content">
+    <span id="closeModal">&times;</span>
+    <p id="commentText"></p>
   </div>
+</div>
 
   <script>
     const firebaseConfig = {
