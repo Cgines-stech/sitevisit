@@ -14,6 +14,11 @@ const folders = {
   "2.A.1.docx.pdf",
   "2.A.2.docx.pdf",
   "2.A.3.docx.pdf"
+  ],
+  "Standard2/Automation Technology": [
+  "2.A.1.docx.pdf",
+  "2.A.2.docx.pdf",
+  "2.A.3.docx.pdf"
   ]
 };
 
