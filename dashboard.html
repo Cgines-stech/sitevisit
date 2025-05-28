@@ -13,8 +13,21 @@
   <h1>User Checklist Dashboard</h1>
   <div id="dashboard"></div>
 
+  <!-- Error Panel -->
+  <div id="errorPanel">
+    <h2>⚠️ Issues Marked "No"</h2>
+    <ul id="errorList"></ul>
+  </div>
+
+  <!-- Modal for showing comments -->
+  <div id="commentModal" class="hidden">
+    <div class="modal-content">
+      <span id="closeModal">&times;</span>
+      <p id="commentText"></p>
+    </div>
+  </div>
+
   <script>
-    
     const firebaseConfig = {
       apiKey: "AIzaSyDANwGnTgz2Sd-VS-9tjrsT5FvsUpe2NQc",
       authDomain: "sitevisit2025-6a6ce.firebaseapp.com",
@@ -25,6 +38,7 @@
     const db = firebase.firestore();
 
     const dashboard = document.getElementById("dashboard");
+    let allNoEntries = [];
 
     function createRow(entry) {
       const row = document.createElement("tr");
@@ -35,12 +49,6 @@
         <td>${entry.comment || "-"}</td>
       `;
       return row;
-    }
-
-    function calculateCompletionPercentage(entries) {
-      const total = entries.length;
-      const completed = entries.filter(e => e.status === "Yes" || e.status === "N/A").length;
-      return total ? Math.round((completed / total) * 100) : 0;
     }
 
     function createFolderNode(name, parent) {
@@ -65,31 +73,49 @@
       return content;
     }
 
-    // Fixed number of files per folder/subfolder
-const expectedFileCounts = {
-  "Standard1": 11,
-  "Standard2/Advanced Emergency Medical Technician": 46
-};
+    const expectedFileCounts = {
+      "Standard1": 11,
+      "Standard2/Advanced Emergency Medical Technician": 46
+    };
 
-function computeFixedCompletionPercentage(folder, entries) {
-  const key = folder.includes("/") ? folder : `${folder}`;
-  const expectedCount = expectedFileCounts[key] || 0;
+    function computeFixedCompletionPercentage(folder, entries) {
+      const key = folder.includes("/") ? folder : `${folder}`;
+      const expectedCount = expectedFileCounts[key] || 0;
 
-  const uniqueCompletedFiles = new Set();
+      const uniqueCompletedFiles = new Set();
 
-  entries.forEach(e => {
-    if (e.status === "Yes" || e.status === "N/A") {
-      uniqueCompletedFiles.add(e.fileKey);
+      entries.forEach(e => {
+        if (e.status === "Yes" || e.status === "N/A") {
+          uniqueCompletedFiles.add(e.fileKey);
+        }
+      });
+
+      return expectedCount > 0
+        ? Math.round((uniqueCompletedFiles.size / expectedCount) * 100)
+        : 0;
     }
-  });
 
-  return expectedCount > 0
-    ? Math.round((uniqueCompletedFiles.size / expectedCount) * 100)
-    : 0;
-}
+    function showCommentModal(comment) {
+      const modal = document.getElementById("commentModal");
+      const commentText = document.getElementById("commentText");
+      commentText.textContent = comment;
+      modal.classList.remove("hidden");
+    }
+
+    document.getElementById("closeModal").onclick = () => {
+      document.getElementById("commentModal").classList.add("hidden");
+    };
+
+    window.onclick = (e) => {
+      const modal = document.getElementById("commentModal");
+      if (e.target === modal) {
+        modal.classList.add("hidden");
+      }
+    };
 
     async function loadDashboard() {
       const snapshot = await db.collection("checklists").get();
+      allNoEntries = [];
 
       snapshot.forEach(doc => {
         const data = doc.data();
@@ -113,6 +139,15 @@ function computeFixedCompletionPercentage(folder, entries) {
         Object.entries(checklist).forEach(([fileKey, items]) => {
           Object.entries(items).forEach(([item, entry]) => {
             entries.push({ fileKey, item, ...entry });
+
+            if (entry.status === "No") {
+              allNoEntries.push({
+                userId: data.userId,
+                fileKey,
+                item,
+                comment: entry.comment || "No comment provided"
+              });
+            }
           });
         });
 
@@ -139,11 +174,11 @@ function computeFixedCompletionPercentage(folder, entries) {
         Object.entries(folderMap).forEach(([folder, subs]) => {
           const flatEntries = Object.values(subs).flat();
           const percentComplete = computeFixedCompletionPercentage(
-  folder === "Standard2" && subs["Advanced Emergency Medical Technician"]
-    ? "Standard2/Advanced Emergency Medical Technician"
-    : folder,
-  flatEntries
-);
+            folder === "Standard2" && subs["Advanced Emergency Medical Technician"]
+              ? "Standard2/Advanced Emergency Medical Technician"
+              : folder,
+            flatEntries
+          );
 
           const folderNode = createFolderNode(`${folder} (${percentComplete}% complete)`, userContent);
 
@@ -179,6 +214,17 @@ function computeFixedCompletionPercentage(folder, entries) {
         userSection.appendChild(userHeader);
         userSection.appendChild(userContent);
         dashboard.appendChild(userSection);
+      });
+
+      // ✅ Now render error panel after all entries are loaded
+      const errorListEl = document.getElementById("errorList");
+      errorListEl.innerHTML = ""; // Clear existing if needed
+
+      allNoEntries.forEach(issue => {
+        const li = document.createElement("li");
+        li.textContent = `${issue.userId}: ${issue.fileKey} → ${issue.item}`;
+        li.addEventListener("click", () => showCommentModal(issue.comment));
+        errorListEl.appendChild(li);
       });
     }
 

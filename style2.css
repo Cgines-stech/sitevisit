@@ -1,3 +1,4 @@
+/* style2.css */
 body {
   font-family: sans-serif;
   background: #f4f4f4;
@@ -71,3 +72,64 @@ th {
   background-color: #ffe6e6;
 }
  
+#errorPanel {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: #fff7f7;
+  padding: 15px;
+  border-left: 4px solid #ff4d4d;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+#errorPanel h2 {
+  margin-top: 0;
+  font-size: 1rem;
+  color: #cc0000;
+}
+
+#errorList {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#errorList li {
+  margin: 8px 0;
+  cursor: pointer;
+  color: #b30000;
+  text-decoration: underline;
+}
+
+#commentModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  z-index: 1000;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.modal-content {
+  position: relative;
+}
+
+#closeModal {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #333;
+}
+
+.hidden {
+  display: none;
+}
