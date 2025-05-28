@@ -224,7 +224,7 @@
 
       allNoEntries.forEach(issue => {
         const li = document.createElement("li");
-        li.textContent = `${issue.userId}: ${issue.fileKey} → ${issue.item}`;
+        li.textContent = `${issue.userId}: ${issue.fileKey}`;
         li.addEventListener("click", () => showCommentModal(issue.comment));
         errorListEl.appendChild(li);
       });

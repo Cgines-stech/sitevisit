@@ -141,6 +141,7 @@ th {
 
 #dashboard {
   flex: 0 0 70%;
+  padding-right: 10px;
 }
 
 #errorPanel {
