@@ -5,20 +5,22 @@ function saveChecklistItem() {
   if (!fileKey || !itemKey) return;
 
   const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
-  const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
+const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
 
-  const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
+const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
+if (!allData[fileKey]) allData[fileKey] = {};
 
-  if (!allData[fileKey]) allData[fileKey] = {};
-  const existing = allData[fileKey][itemKey] || {};
+const existing = allData[fileKey][itemKey] || {};
 
-  allData[fileKey][itemKey] = {
-    status: selectedStatus,
-    comment,
-    ...(existing.docLink && { docLink: existing.docLink })  // ✅ preserve link if it exists
-  };
+allData[fileKey][itemKey] = {
+  status: selectedStatus,
+  comment,
+  ...(existing.link && { link: existing.link }),
+  ...(existing.docLink && { docLink: existing.docLink })
+};
 
-  localStorage.setItem("checklist", JSON.stringify(allData));
+localStorage.setItem("checklist", JSON.stringify(allData));
+
 }
 
 function loadChecklist() {
