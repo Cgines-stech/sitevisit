@@ -84,6 +84,13 @@ const folders = {
   ]
 };
 
+const supplementalPDFs = {
+  "Standard1/1.1.docx.pdf": "SupportFiles/support1.pdf",
+  "Standard1/1.2.docx.pdf": "SupportFiles/support2.pdf",
+  "Standard1/1.3.docx.pdf": "SupportFiles/support3.pdf",
+  // and so on
+};
+
 const checklistItems = [
   "Item 1",
   "Item 2",

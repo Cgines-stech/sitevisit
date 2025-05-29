@@ -17,6 +17,11 @@
   </div>
 
   <div class="viewer">
+    <div class="pdf-tabs" style="margin-bottom: 10px;">
+  <button id="tab1" class="tab active">PDF 1</button>
+  <button id="tab2" class="tab">PDF 2</button>
+</div>
+
     <iframe id="pdfViewer" src="about:blank" type="application/pdf" title="PDF Viewer" style="min-height: 600px; width: 100%;"></iframe>
     <div>
       <button id="prevBtn">← Prev File</button>
@@ -62,36 +67,66 @@
   <!-- Startup and DOM Event Bindings -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      buildNavTree();
+  buildNavTree();
 
-      if (flatFileList.length > 0) {
-        setFile(flatFileList[0]);
+  if (flatFileList.length > 0) {
+    setFile(flatFileList[0]);
+  } else {
+    console.warn("No files available in flatFileList.");
+  }
+
+  window.addEventListener("beforeunload", saveChecklistItem);
+
+  document.getElementById("prevBtn").addEventListener("click", prevFile);
+  document.getElementById("nextBtn").addEventListener("click", nextFile);
+
+  document.getElementById("downloadBtn").addEventListener("click", () => {
+    if (typeof window.downloadChecklist === "function") {
+      window.downloadChecklist();
+    } else {
+      alert("Download module not loaded. Check console or file path.");
+    }
+  });
+
+  document.getElementById("importFile").addEventListener("change", () => window.importChecklist?.());
+
+  // ✅ Handle Upload to Cloud button triggering file input
+  const uploadCloudBtn = document.getElementById("uploadToCloudBtn");
+  const hiddenInput = document.getElementById("firestoreUploadInput");
+  if (uploadCloudBtn && hiddenInput) {
+    uploadCloudBtn.addEventListener("click", () => hiddenInput.click());
+  }
+
+  // 🔁 Tab switching logic (Step 5)
+  document.getElementById("tab1").addEventListener("click", () => switchTab('tab1'));
+  document.getElementById("tab2").addEventListener("click", () => switchTab('tab2'));
+
+  function switchTab(tabId) {
+    activeTab = tabId;
+
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+
+    const file = pdfSlots[tabId];
+    if (file) {
+      viewerEl.src = `${file.pdfPath}?t=${Date.now()}`;
+
+      if (tabId === 'tab1') {
+        checklistContainer.innerHTML = "";
+        currentFileIndex = flatFileList.indexOf(file.keyForChecklist);
+        currentItem = 0;
+        loadChecklist();
+        highlightCurrentFile(file.keyForChecklist);
       } else {
-        console.warn("No files available in flatFileList.");
+        checklistContainer.innerHTML = "<div style='text-align:center;'>Checklist is hidden while viewing a reference PDF.</div>";
       }
+    } else {
+      viewerEl.src = "about:blank";
+      checklistContainer.innerHTML = tabId === 'tab1' ? "" : "<div style='text-align:center;'>Checklist is hidden while viewing a reference PDF.</div>";
+    }
+  }
+});
 
-      window.addEventListener("beforeunload", saveChecklistItem);
-
-      document.getElementById("prevBtn").addEventListener("click", prevFile);
-      document.getElementById("nextBtn").addEventListener("click", nextFile);
-
-      document.getElementById("downloadBtn").addEventListener("click", () => {
-        if (typeof window.downloadChecklist === "function") {
-          window.downloadChecklist();
-        } else {
-          alert("Download module not loaded. Check console or file path.");
-        }
-      });
-
-      document.getElementById("importFile").addEventListener("change", () => window.importChecklist?.());
-
-      // ✅ Handle Upload to Cloud button triggering file input
-      const uploadCloudBtn = document.getElementById("uploadToCloudBtn");
-      const hiddenInput = document.getElementById("firestoreUploadInput");
-      if (uploadCloudBtn && hiddenInput) {
-        uploadCloudBtn.addEventListener("click", () => hiddenInput.click());
-      }
-    });
   </script>
 
   <!-- Module-based script for import/export -->

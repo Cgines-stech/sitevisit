@@ -1,34 +1,32 @@
 /*viewer.js*/
 function setFile(pdfPath, keyForChecklist) {
-  // Save current checklist before switching
-  const previousFileKey = flatFileList[currentFileIndex];
-  if (previousFileKey) {
-  const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
-  const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
-  const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
+  if (activeTab === 'tab1') {
+    // Save current checklist state before switching (as before)
 
-  const itemKey = checklistItems[currentItem];
-  if (!allData[previousFileKey]) allData[previousFileKey] = {};
-  const existing = allData[previousFileKey][itemKey] || {};
+    currentFileIndex = flatFileList.indexOf(keyForChecklist);
+    currentItem = 0;
+    checklistContainer.innerHTML = "";
+    loadChecklist();
+    highlightCurrentFile(keyForChecklist);
 
-  allData[previousFileKey][itemKey] = {
-    status: selectedStatus,
-    comment,
-    ...(existing.link && { link: existing.link }),
-    ...(existing.docLink && { docLink: existing.docLink })
-  };
+    // 🔁 Auto-load supplemental file to Tab 2
+    const supplementKey = supplementalPDFs[keyForChecklist];
+    if (supplementKey) {
+      const supportPath = `https://cgines-stech.github.io/sitevisit/pdf/${supplementKey}`;
+      pdfSlots.tab2 = { pdfPath: supportPath, keyForChecklist: supplementKey };
 
-  localStorage.setItem("checklist", JSON.stringify(allData));
-}
+      if (activeTab === 'tab2') {
+        viewerEl.src = `${supportPath}?t=${Date.now()}`;
+        checklistContainer.innerHTML = "<div style='text-align:center;'>Checklist is hidden while viewing a reference PDF.</div>";
+      }
+    } else {
+      pdfSlots.tab2 = null; // Clear it
+    }
+  }
 
-  // Switch to new file
-  currentFileIndex = flatFileList.indexOf(keyForChecklist);
-  currentItem = 0;
-
+  // Load primary viewer
+  pdfSlots[activeTab] = { pdfPath, keyForChecklist };
   viewerEl.src = `${pdfPath}?t=${Date.now()}`;
-  checklistContainer.innerHTML = "";
-  loadChecklist();
-  highlightCurrentFile(keyForChecklist);
 }
 
 function prevFile() {
