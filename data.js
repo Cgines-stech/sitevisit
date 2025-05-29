@@ -38,6 +38,13 @@ const folders = {
   "4.7.docx.pdf",
   "4.8.docx.pdf"
   ],
+  "Standard9": [
+  "9.1.docx.pdf",
+  "9.2 (Not Applicable).docx.pdf",
+  "9.3.docx.pdf",
+  "9.4.docx.pdf",
+  "9.5.docx.pdf"
+  ],
   "Standard10": [
   "10.A.1.docx.pdf",
   "10.A.2.docx.pdf",
@@ -93,7 +100,7 @@ const associatedDocs = {
   "Standard1/1.5.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf"],
   "Standard1/1.6.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf"],
   "Standard1/1.7.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf"],
-  "Standard1/1.8.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf"],
+  "Standard1/1.8.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf", "SupportFiles/Standard1/SelfStudy2025_23.pdf"],
   "Standard1/1.9.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf"],
   "Standard1/1.10.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf"],
   "Standard1/1.11.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf"],
@@ -107,6 +114,13 @@ const associatedDocs = {
   "Standard4/4.6.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_274.pdf"],
   "Standard4/4.7.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_274.pdf", "SupportFiles/Standard4/SelfStudy2025_275.pdf"],
   "Standard4/4.8.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_275.pdf"],
+
+  //Standard9
+  "9.1.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf"],
+  "9.2 (Not Applicable).docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf"],
+  "9.3.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf", "SupportFiles/Standard9/SelfStudy2025_311.pdf"],
+  "9.4.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
+  "9.5.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
 
   //Standard10
   "Standard10/10.A.1.docx.pdf": "",
