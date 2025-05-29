@@ -85,9 +85,17 @@ const folders = {
 };
 
 const associatedDocs = {
-  "Conditions/0.A.1 Worksheet A.1.docx.pdf": "Standard1/1.1.docx.pdf",
-  "Standard1/1.1.docx.pdf": "https://cgines-stech.github.io/Course-Catalog/?pdf=Advanced%20Emergency%20Medical%20Technician%2FTEEM%201202.pdf"
-  // Add more mappings as needed
+  "Standard1/1.1.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_21.pdf",
+  "Standard1/1.2.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_21.pdf",
+  "Standard1/1.3.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_21.pdf",
+  "Standard1/1.4.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_22.pdf",
+  "Standard1/1.5.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_22.pdf",
+  "Standard1/1.6.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_22.pdf",
+  "Standard1/1.7.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_22.pdf",
+  "Standard1/1.8.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_22.pdf",
+  "Standard1/1.9.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_23.pdf",
+  "Standard1/1.10.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_23.pdf",
+  "Standard1/1.11.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_23.pdf"
 };
 window.associatedDocs = associatedDocs;
 
