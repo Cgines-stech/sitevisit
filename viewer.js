@@ -31,36 +31,45 @@ function setFile(pdfPath, keyForChecklist) {
   highlightCurrentFile(keyForChecklist);
   
   // Show 'View Additional PDF' button if there's an associated doc
-const extraBtn = document.getElementById("extraDocBtn");
-const returnBtn = document.getElementById("returnBtn");
+const extraBtnContainer = document.getElementById("extraDocBtnContainer");
+extraBtnContainer.innerHTML = ""; // Clear previous buttons
+extraBtnContainer.style.display = "none";
 
+const returnBtn = document.getElementById("returnBtn");
 let originalURL = pdfPath;
 
-if (associatedDocs[keyForChecklist]) {
-  extraBtn.style.display = "inline-block";
-  returnBtn.style.display = "none"; // Initially hide return
+const extras = associatedDocs[keyForChecklist];
+if (Array.isArray(extras) && extras.length > 0) {
+  extraBtnContainer.style.display = "block";
 
-  extraBtn.onclick = () => {
-    let extraUrl = associatedDocs[keyForChecklist];
-if (!extraUrl.startsWith("http")) {
-  // Assume it's relative to the sitevisit/pdf/ folder
-  extraUrl = `https://cgines-stech.github.io/sitevisit/pdf/${extraUrl}`;
-}
-viewerEl.src = `${extraUrl}?t=${Date.now()}`;
+  extras.forEach((url, i) => {
+    let resolvedUrl = url.startsWith("http")
+      ? url
+      : `https://cgines-stech.github.io/sitevisit/pdf/${url}`;
 
-    extraBtn.style.display = "none";
-    returnBtn.style.display = "inline-block";
-  };
+    const btn = document.createElement("button");
+    btn.textContent = `📎 Supplemental ${i + 1}`;
+    btn.className = "extra-pdf-button";
+    btn.onclick = () => {
+      viewerEl.src = `${resolvedUrl}?t=${Date.now()}`;
+      returnBtn.style.display = "inline-block";
+      extraBtnContainer.style.display = "none";
+    };
+    extraBtnContainer.appendChild(btn);
+  });
 
+  // Show return button when any extra is opened
   returnBtn.onclick = () => {
     viewerEl.src = `${originalURL}?t=${Date.now()}`;
-    extraBtn.style.display = "inline-block";
+    extraBtnContainer.style.display = "block";
     returnBtn.style.display = "none";
   };
+
 } else {
-  extraBtn.style.display = "none";
+  extraBtnContainer.style.display = "none";
   returnBtn.style.display = "none";
 }
+
 
 }
 

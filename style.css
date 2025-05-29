@@ -176,3 +176,12 @@ h3 {
     order: 3;
   }
 }
+
+.extra-pdf-button {
+  background-color: #6c757d;
+  margin-left: 6px;
+  font-size: 0.9em;
+}
+.extra-pdf-button:hover {
+  background-color: #5a6268;
+}
