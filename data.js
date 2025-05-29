@@ -86,8 +86,8 @@ const folders = {
 
 const associatedDocs = {
   //Standard1
-  "Standard1/1.1.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_21.pdf",
-  "Standard1/1.2.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_21.pdf",
+  "Standard1/1.1.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf"],
+  "Standard1/1.2.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf"],
   "Standard1/1.3.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_21.pdf",
   "Standard1/1.4.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_22.pdf",
   "Standard1/1.5.docx.pdf": "SupportFiles/Standard1/SelfStudy2025_22.pdf",
