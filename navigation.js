@@ -22,9 +22,8 @@ function buildNavTree() {
     const rootUl = document.createElement("ul");
     rootUl.setAttribute("role", "group");
 
-    if (rootFolder === "Standard2") {
-      rootUl.style.display = "none";
-    }
+    // Collapse all folders by default except "Conditions"
+    rootUl.style.display = rootFolder === "Conditions" ? "block" : "none";
 
     rootHeader.onclick = () => {
       rootUl.style.display = rootUl.style.display === "none" ? "block" : "none";
