@@ -1,10 +1,12 @@
 /*data.js*/
 const folders = {
+  /*
   "Conditions": [
     "0.A.1 Worksheet A.1.docx.pdf",
     "0.A.2.docx.pdf",
     "0.A.3.docx.pdf"
   ],
+  */
   "Standard1": [
     "1.1.docx.pdf",
     "1.2.docx.pdf",
@@ -18,6 +20,7 @@ const folders = {
     "1.10.docx.pdf",
     "1.11.docx.pdf"
   ],
+  /*
   "Standard2/Advanced Emergency Medical Technician": [
   "2.A.1.docx.pdf",
   "2.A.2.docx.pdf",
@@ -28,6 +31,7 @@ const folders = {
   "2.A.2.docx.pdf",
   "2.A.3.docx.pdf"
   ],
+  */
   "Standard4": [
   "4.1.docx.pdf",
   "4.2.docx.pdf",
@@ -44,7 +48,7 @@ const folders = {
   "9.3.docx.pdf",
   "9.4.docx.pdf",
   "9.5.docx.pdf"
-  ],
+  ]/*,
   "Standard10": [
   "10.A.1.docx.pdf",
   "10.A.2.docx.pdf",
@@ -89,6 +93,7 @@ const folders = {
   "10.E.4.docx.pdf",
   "10.E.5.docx.pdf"
   ]
+  */
 };
 
 const associatedDocs = {
@@ -106,8 +111,8 @@ const associatedDocs = {
   "Standard1/1.11.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf"],
 
   //Standard4
-  "Standard4/4.1.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_273.pdf", "SupportFiles/Standard4/SelfStudy2025_274.pdf"],
-  "Standard4/4.2.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_274.pdf"],
+  "Standard4/4.1.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_273.pdf"],
+  "Standard4/4.2.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_273.pdf", "SupportFiles/Standard4/SelfStudy2025_274.pdf"],
   "Standard4/4.3.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_274.pdf"],
   "Standard4/4.4.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_274.pdf"],
   "Standard4/4.5.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_274.pdf"],
@@ -120,7 +125,7 @@ const associatedDocs = {
   "Standard9/9.2 (Not Applicable).docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf"],
   "Standard9/9.3.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf", "SupportFiles/Standard9/SelfStudy2025_311.pdf"],
   "Standard9/9.4.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
-  "Standard9/9.5.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
+  "Standard9/9.5.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"]/*,
 
   //Standard10
   "Standard10/10.A.1.docx.pdf": "",
@@ -165,6 +170,7 @@ const associatedDocs = {
   "Standard10/10.E.3.docx.pdf": "",
   "Standard10/10.E.4.docx.pdf": "",
   "Standard10/10.E.5.docx.pdf": ""
+  */
 };
 window.associatedDocs = associatedDocs;
 
