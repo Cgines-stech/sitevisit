@@ -29,6 +29,33 @@ function setFile(pdfPath, keyForChecklist) {
   checklistContainer.innerHTML = "";
   loadChecklist();
   highlightCurrentFile(keyForChecklist);
+  
+  // Show 'View Additional PDF' button if there's an associated doc
+const extraBtn = document.getElementById("extraDocBtn");
+const returnBtn = document.getElementById("returnBtn");
+
+let originalURL = pdfPath;
+
+if (associatedDocs[keyForChecklist]) {
+  extraBtn.style.display = "inline-block";
+  returnBtn.style.display = "none"; // Initially hide return
+
+  extraBtn.onclick = () => {
+    viewerEl.src = `${associatedDocs[keyForChecklist]}?t=${Date.now()}`;
+    extraBtn.style.display = "none";
+    returnBtn.style.display = "inline-block";
+  };
+
+  returnBtn.onclick = () => {
+    viewerEl.src = `${originalURL}?t=${Date.now()}`;
+    extraBtn.style.display = "inline-block";
+    returnBtn.style.display = "none";
+  };
+} else {
+  extraBtn.style.display = "none";
+  returnBtn.style.display = "none";
+}
+
 }
 
 function prevFile() {

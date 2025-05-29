@@ -84,6 +84,13 @@ const folders = {
   ]
 };
 
+const associatedDocs = {
+  "Conditions/0.A.1 Worksheet A.1.docx.pdf": "https://cgines-stech.github.io/Course-Catalog/?pdf=Advanced%20Emergency%20Medical%20Technician%2FTEEM%201202.pdf",
+  "Standard1/1.1.docx.pdf": "https://cgines-stech.github.io/Course-Catalog/?pdf=Advanced%20Emergency%20Medical%20Technician%2FTEEM%201202.pdf"
+  // Add more mappings as needed
+};
+window.associatedDocs = associatedDocs;
+
 const checklistItems = [
   "Item 1",
   "Item 2",
