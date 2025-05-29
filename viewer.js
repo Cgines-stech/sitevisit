@@ -48,7 +48,7 @@ if (Array.isArray(extras) && extras.length > 0) {
       : `https://cgines-stech.github.io/sitevisit/pdf/${url}`;
 
     const btn = document.createElement("button");
-    btn.textContent = `📎 Supplemental ${i + 1}`;
+    btn.textContent = `📎 Self Study Reference ${i + 1}`;
     btn.className = "extra-pdf-button";
     btn.onclick = () => {
       viewerEl.src = `${resolvedUrl}?t=${Date.now()}`;
@@ -69,7 +69,6 @@ if (Array.isArray(extras) && extras.length > 0) {
   extraBtnContainer.style.display = "none";
   returnBtn.style.display = "none";
 }
-
 
 }
 
