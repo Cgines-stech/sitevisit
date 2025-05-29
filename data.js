@@ -116,11 +116,11 @@ const associatedDocs = {
   "Standard4/4.8.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_275.pdf"],
 
   //Standard9
-  "9.1.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf"],
-  "9.2 (Not Applicable).docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf"],
-  "9.3.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf", "SupportFiles/Standard9/SelfStudy2025_311.pdf"],
-  "9.4.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
-  "9.5.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
+  "Standard9/9.1.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf"],
+  "Standard9/9.2 (Not Applicable).docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf"],
+  "Standard9/9.3.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf", "SupportFiles/Standard9/SelfStudy2025_311.pdf"],
+  "Standard9/9.4.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
+  "Standard9/9.5.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
 
   //Standard10
   "Standard10/10.A.1.docx.pdf": "",
