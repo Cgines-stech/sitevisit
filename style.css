@@ -1,4 +1,4 @@
-/* style.css */
+/* style.css .*/
 /* Base Layout */
 body {
   display: flex;
@@ -175,4 +175,23 @@ h3 {
   .viewer {
     order: 3;
   }
+}
+
+.pdf-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pdf-tabs button {
+  padding: 6px 12px;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.pdf-tabs button.active-tab {
+  background: #333;
+  color: #fff;
 }

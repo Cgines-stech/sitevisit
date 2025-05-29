@@ -1,35 +1,45 @@
 /*viewer.js*/
 function setFile(pdfPath, keyForChecklist) {
   // Save current checklist before switching
-  const previousFileKey = flatFileList[currentFileIndex];
-  if (previousFileKey) {
-  const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
-  const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
-  const allData = JSON.parse(localStorage.getItem("checklist") || "{}");
+  saveChecklistItem();
 
-  const itemKey = checklistItems[currentItem];
-  if (!allData[previousFileKey]) allData[previousFileKey] = {};
-  const existing = allData[previousFileKey][itemKey] || {};
-
-  allData[previousFileKey][itemKey] = {
-    status: selectedStatus,
-    comment,
-    ...(existing.link && { link: existing.link }),
-    ...(existing.docLink && { docLink: existing.docLink })
-  };
-
-  localStorage.setItem("checklist", JSON.stringify(allData));
-}
-
-  // Switch to new file
   currentFileIndex = flatFileList.indexOf(keyForChecklist);
   currentItem = 0;
-
-  viewerEl.src = `${pdfPath}?t=${Date.now()}`;
+  currentTab = "main";
   checklistContainer.innerHTML = "";
-  loadChecklist();
   highlightCurrentFile(keyForChecklist);
+
+  // Save current file info globally
+  window.currentChecklistKey = keyForChecklist;
+  window.currentPdfPath = pdfPath;
+  window.supplementalPdfPath = pdfPath.replace(/\.pdf$/, '_supplemental.pdf'); // customize if naming varies
+
+  updatePDFView();
+  loadChecklist();
 }
+
+function updatePDFView() {
+  if (currentTab === "main") {
+    viewerEl.src = `${currentPdfPath}?t=${Date.now()}`;
+    checklistContainer.style.display = "block";
+  } else {
+    viewerEl.src = `${supplementalPdfPath}?t=${Date.now()}`;
+    checklistContainer.style.display = "none";
+  }
+
+  document.getElementById("mainTab").classList.toggle("active-tab", currentTab === "main");
+  document.getElementById("suppTab").classList.toggle("active-tab", currentTab === "supplemental");
+}
+
+document.getElementById("mainTab").addEventListener("click", () => {
+  currentTab = "main";
+  updatePDFView();
+});
+
+document.getElementById("suppTab").addEventListener("click", () => {
+  currentTab = "supplemental";
+  updatePDFView();
+});
 
 function prevFile() {
   if (currentFileIndex > 0) {

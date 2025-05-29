@@ -1,4 +1,4 @@
-/*checklist.js*/
+/*checklist.js .*/
 function saveChecklistItem() {
   const fileKey = flatFileList[currentFileIndex];
   const itemKey = checklistItems[currentItem];

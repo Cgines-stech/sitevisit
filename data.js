@@ -91,6 +91,7 @@ const checklistItems = [
   "2.A.2"
 ];
 
+
 let flatFileList = [];
 let currentFileIndex = 0;
 let currentItem = 0;
@@ -109,3 +110,4 @@ window.currentItem = currentItem;
 window.viewerEl = viewerEl;
 window.folderListEl = folderListEl;
 window.checklistContainer = checklistContainer;
+window.currentTab = "main"; // or "supplemental"
