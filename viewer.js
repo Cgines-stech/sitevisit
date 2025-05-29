@@ -41,7 +41,13 @@ if (associatedDocs[keyForChecklist]) {
   returnBtn.style.display = "none"; // Initially hide return
 
   extraBtn.onclick = () => {
-    viewerEl.src = `${associatedDocs[keyForChecklist]}?t=${Date.now()}`;
+    let extraUrl = associatedDocs[keyForChecklist];
+if (!extraUrl.startsWith("http")) {
+  // Assume it's relative to the sitevisit/pdf/ folder
+  extraUrl = `https://cgines-stech.github.io/sitevisit/pdf/${extraUrl}`;
+}
+viewerEl.src = `${extraUrl}?t=${Date.now()}`;
+
     extraBtn.style.display = "none";
     returnBtn.style.display = "inline-block";
   };
