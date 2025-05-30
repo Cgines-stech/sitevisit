@@ -1,3 +1,4 @@
+<!-- 404.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +30,26 @@
     <section>
       <h2>Uploading a Review</h2>
       <p>Refresh your browser, press <strong>Ctrl + F5</strong>, then upload and attach your downloaded file.</p>
+      <p>
+        If you are experiencing an issue with your upload not importing correctly,
+        <a href="#" onclick="downloadEmptyFile()">download this file</a>, upload this file, then repeat the previous step.
+      </p>
     </section>
   </div>
+
+  <script>
+    function downloadEmptyFile() {
+      const text = "User id: empty";
+      const blob = new Blob([text], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "empty_userid.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
 </body>
 </html>
