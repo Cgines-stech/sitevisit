@@ -43,20 +43,23 @@ if (Array.isArray(extras) && extras.length > 0) {
   extraBtnContainer.style.display = "block";
 
   extras.forEach((url, i) => {
-    let resolvedUrl = url.startsWith("http")
-      ? url
-      : `https://cgines-stech.github.io/sitevisit/pdf/${url}`;
+  let resolvedUrl = url.startsWith("http")
+    ? url
+    : `https://cgines-stech.github.io/sitevisit/pdf/${url}`;
 
-    const btn = document.createElement("button");
-    btn.textContent = `📎 Self Study Reference ${i + 1}`;
-    btn.className = "extra-pdf-button";
-    btn.onclick = () => {
-      viewerEl.src = `${resolvedUrl}?t=${Date.now()}`;
-      returnBtn.style.display = "inline-block";
-      extraBtnContainer.style.display = "none";
-    };
-    extraBtnContainer.appendChild(btn);
-  });
+  const customNames = associatedDocNames[keyForChecklist] || [];
+  const name = customNames[i] || `📎 Self Study Reference ${i + 1}`;
+
+  const btn = document.createElement("button");
+  btn.textContent = name;
+  btn.className = "extra-pdf-button";
+  btn.onclick = () => {
+    viewerEl.src = `${resolvedUrl}?t=${Date.now()}`;
+    returnBtn.style.display = "inline-block";
+    extraBtnContainer.style.display = "none";
+  };
+  extraBtnContainer.appendChild(btn);
+});
 
   // Show return button when any extra is opened
   returnBtn.onclick = () => {
