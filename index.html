@@ -53,8 +53,9 @@
 <div class="checklist-actions-grid">
   <button id="downloadBtn" class="checklist-button">Export</button>
 
-  <label for="importFile" class="checklist-button">Import</label>
-  <input type="file" id="importFile" accept=".txt" style="display: none;" />
+<button id="importTrigger" class="checklist-button" type="button">Import</button>
+<input type="file" id="importFile" accept=".txt" style="display: none;" />
+
 
   <button id="uploadToCloudBtn" class="checklist-button" type="button">Upload</button>
 
@@ -69,39 +70,49 @@
   <script src="viewer.js"></script>
 
   <!-- Startup and DOM Event Bindings -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      buildNavTree();
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    buildNavTree();
 
-      if (flatFileList.length > 0) {
-        setFile(flatFileList[0]);
+    if (flatFileList.length > 0) {
+      setFile(flatFileList[0]);
+    } else {
+      console.warn("No files available in flatFileList.");
+    }
+
+    window.addEventListener("beforeunload", saveChecklistItem);
+
+    document.getElementById("prevBtn").addEventListener("click", prevFile);
+    document.getElementById("nextBtn").addEventListener("click", nextFile);
+
+    // Handle Export
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      if (typeof window.downloadChecklist === "function") {
+        window.downloadChecklist();
       } else {
-        console.warn("No files available in flatFileList.");
-      }
-
-      window.addEventListener("beforeunload", saveChecklistItem);
-
-      document.getElementById("prevBtn").addEventListener("click", prevFile);
-      document.getElementById("nextBtn").addEventListener("click", nextFile);
-
-      document.getElementById("downloadBtn").addEventListener("click", () => {
-        if (typeof window.downloadChecklist === "function") {
-          window.downloadChecklist();
-        } else {
-          alert("Download module not loaded. Check console or file path.");
-        }
-      });
-
-      document.getElementById("importFile").addEventListener("change", () => window.importChecklist?.());
-
-      // ✅ Handle Upload to Cloud button triggering file input
-      const uploadCloudBtn = document.getElementById("uploadToCloudBtn");
-      const hiddenInput = document.getElementById("firestoreUploadInput");
-      if (uploadCloudBtn && hiddenInput) {
-        uploadCloudBtn.addEventListener("click", () => hiddenInput.click());
+        alert("Download module not loaded. Check console or file path.");
       }
     });
-  </script>
+
+    // Handle Import (file picker + processing)
+    const importBtn = document.getElementById("importTrigger");
+    const importInput = document.getElementById("importFile");
+
+    if (importBtn && importInput) {
+      importBtn.addEventListener("click", () => importInput.click());
+      importInput.addEventListener("change", () => window.importChecklist?.());
+    }
+
+    // Handle Upload to Cloud
+    const uploadCloudBtn = document.getElementById("uploadToCloudBtn");
+    const uploadInput = document.getElementById("firestoreUploadInput");
+
+    if (uploadCloudBtn && uploadInput) {
+      uploadCloudBtn.addEventListener("click", () => uploadInput.click());
+    }
+  });
+</script>
+
 
   <!-- Module-based script for import/export -->
   <script type="module">
