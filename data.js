@@ -98,17 +98,17 @@ const folders = {
 
 const associatedDocs = {
   //Standard1
-  "Standard1/1.1.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf", "SupportFiles/Standard1/SelfStudy2025_21.pdf"],
-  "Standard1/1.2.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf"],
-  "Standard1/1.3.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf"],
-  "Standard1/1.4.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf"],
-  "Standard1/1.5.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf"],
-  "Standard1/1.6.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf"],
-  "Standard1/1.7.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf"],
-  "Standard1/1.8.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf", "SupportFiles/Standard1/SelfStudy2025_23.pdf"],
-  "Standard1/1.9.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf"],
-  "Standard1/1.10.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf"],
-  "Standard1/1.11.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf"],
+  "Standard1/1.1.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.2.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.3.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.4.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.5.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.6.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.7.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.8.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_22.pdf", "SupportFiles/Standard1/SelfStudy2025_23.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.9.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.10.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf", "SupportFiles/Standard1/Standard1.pdf"],
+  "Standard1/1.11.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_23.pdf", "SupportFiles/Standard1/Standard1.pdf"],
 
   //Standard4
   "Standard4/4.1.docx.pdf": ["SupportFiles/Standard4/SelfStudy2025_273.pdf"],
@@ -174,8 +174,19 @@ const associatedDocs = {
 };
 
 const associatedDocNames = {
+  // Standard 1 Associated File Names
   "Standard1/1.1.docx.pdf": ["1.1 — Self Study", "Standard 1 — Self Study"],
-  "Standard1/1.2.docx.pdf": ["1.2 — Self Study"]
+  "Standard1/1.2.docx.pdf": ["1.2 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.3.docx.pdf": ["1.3 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.4.docx.pdf": ["1.4 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.5.docx.pdf": ["1.5 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.6.docx.pdf": ["1.6 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.7.docx.pdf": ["1.7 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.8.docx.pdf": ["1.8 — Self Study p.1", "1.8 — Self Study p.2", "Standard 1 — Self Study"],
+  "Standard1/1.9.docx.pdf": ["1.9 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.10.docx.pdf": ["1.10 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.11.docx.pdf": ["1.11 — Self Study", "Standard 1 — Self Study"]
+
   // default will be used if not listed here
 };
 
