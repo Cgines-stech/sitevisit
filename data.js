@@ -180,6 +180,7 @@ const associatedDocNames = {
 };
 
 window.associatedDocs = associatedDocs;
+window.associatedDocNames = associatedDocNames;
 
 const checklistItems = [
   "Item 1",

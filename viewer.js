@@ -47,7 +47,7 @@ if (Array.isArray(extras) && extras.length > 0) {
     ? url
     : `https://cgines-stech.github.io/sitevisit/pdf/${url}`;
 
-  const customNames = associatedDocNames[keyForChecklist] || [];
+  const customNames = window.associatedDocNames?.[keyForChecklist] || [];
   const name = customNames[i] || `📎 Self Study Reference ${i + 1}`;
 
   const btn = document.createElement("button");
