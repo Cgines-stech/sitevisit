@@ -174,8 +174,8 @@ const associatedDocs = {
 };
 
 const associatedDocNames = {
-  "Standard1/1.8.docx.pdf": ["1.1 — Self Study", "Standard 1 — Self Study"],
-  "Standard4/4.2.docx.pdf": ["1.2 — Self Study"]
+  "Standard1/1.1.docx.pdf": ["1.1 — Self Study", "Standard 1 — Self Study"],
+  "Standard1/1.2.docx.pdf": ["1.2 — Self Study"]
   // default will be used if not listed here
 };
 

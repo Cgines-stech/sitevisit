@@ -17,7 +17,15 @@
   </div>
 
   <div class="viewer">
-    <iframe id="pdfViewer" src="about:blank" type="application/pdf" title="PDF Viewer" style="min-height: 600px; width: 100%;"></iframe>
+    <iframe
+  id="pdfViewer"
+  src="about:blank"
+  type="application/pdf"
+  title="PDF Viewer"
+  style="min-height: 600px; width: 100%;"
+  sandbox="allow-same-origin allow-scripts allow-popups"
+></iframe>
+
     <div>
   <button id="prevBtn">← Prev File</button>
   <button id="nextBtn">Next File →</button>
@@ -42,21 +50,17 @@
     <div id="checklistContainer" role="region" aria-label="Checklist Items"></div>
 
     <!-- Button Group Fixed at Bottom -->
-    <div class="checklist-actions">
-      <button id="downloadBtn">Download</button>
+<div class="checklist-actions-grid">
+  <button id="downloadBtn" class="checklist-button">Export</button>
 
-      <label for="importFile" class="upload-label">Upload</label>
-      <input type="file" id="importFile" accept=".txt" style="display: none;" />
+  <label for="importFile" class="checklist-button">Import</label>
+  <input type="file" id="importFile" accept=".txt" style="display: none;" />
 
-      <!-- Fixed Upload to Cloud Button -->
-      <button id="uploadToCloudBtn" class="upload-label" type="button">Upload to Cloud</button>
-      <input type="file" id="firestoreUploadInput" accept=".txt" style="display: none;" />
+  <button id="uploadToCloudBtn" class="checklist-button" type="button">Upload</button>
 
-      <!-- Add this block right below the Upload to Cloud input -->
-      <a href="dashboard.html" class="upload-label" style="margin-top: 10px; display: inline-block; text-align: center;">📊 View Dashboard</a>
-
-    </div>
-  </div>
+  <a href="dashboard.html" class="checklist-button" target="_blank" rel="noopener">📊 Dashboard</a>
+  <input type="file" id="firestoreUploadInput" accept=".txt" style="display: none;" />
+</div>
 
   <!-- JavaScript Dependencies -->
   <script src="data.js"></script>
