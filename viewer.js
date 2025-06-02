@@ -1,7 +1,12 @@
 /*viewer.js*/
 function setFile(pdfPath, keyForChecklist) {
   // Save current checklist before switching
+
+  
   const previousFileKey = flatFileList[currentFileIndex];
+  const returnBtn = document.getElementById("returnBtn");
+  returnBtn.style.display = "none";
+
   if (previousFileKey) {
   const selectedStatus = checklistContainer.querySelector('input[name="status"]:checked')?.value || "";
   const comment = checklistContainer.querySelector('textarea[name="comment"]')?.value || "";
@@ -35,7 +40,6 @@ const extraBtnContainer = document.getElementById("extraDocBtnContainer");
 extraBtnContainer.innerHTML = ""; // Clear previous buttons
 extraBtnContainer.style.display = "none";
 
-const returnBtn = document.getElementById("returnBtn");
 let originalURL = pdfPath;
 
 const extras = associatedDocs[keyForChecklist];
