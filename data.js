@@ -336,7 +336,7 @@ const associatedDocNames = {
   "Standard5/5.B.4.docx.pdf": ["5.B.4 — Self Study", "Standard 5 — Self Study"],
   "Standard5/5.B.5.docx.pdf": ["5.B.5 — Self Study", "Standard 5 — Self Study"],
 
-  //Standard7
+  // Standard 7 Associated File Names
   "Standard7/7.1.docx.pdf": ["7.1 — Self Study", "Standard 7 — Self Study"],
   "Standard7/7.2.docx.pdf": ["7.2 — Self Study", "Standard 7 — Self Study"],
   "Standard7/7.3.docx.pdf": ["7.3 — Self Study", "Standard 7 — Self Study"],
@@ -363,7 +363,7 @@ const associatedDocNames = {
   "Standard7/7.24 Item.docx.pdf": ["7.24.Item — Self Study", "Standard 7 — Self Study"],
   "Standard7/7.24 Worksheet 1.A.docx.pdf": ["7.2.Worksheet.1.A — Self Study", "Standard 7 — Self Study"],
 
-  // Standard8
+  // Standard 8 Associated File Names
   "Standard8/8.A.1.docx.pdf": ["8.A.1 — Self Study", "Standard 8 — Self Study"],
   "Standard8/8.A.2.docx.pdf": ["8.A.2 — Self Study", "Standard 8 — Self Study"],
   "Standard8/8.A.3.docx.pdf": ["8.A.3 — Self Study", "Standard 8 — Self Study"],
