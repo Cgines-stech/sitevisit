@@ -44,24 +44,57 @@
           <li>Import your Export file</li>
         </ol>
       </p>
-      <p>This should clear overwrite the local storage memory with blank data, which then allows you to overwrite it with your import.</p>
+      <p>This should overwrite the local storage memory with blank data, which then allows you to overwrite it with your import.</p>
 <hr>
     </section>
   </div>
 
-  <script>
-    function downloadEmptyFile() {
-      const text = "User id: empty";
-      const blob = new Blob([text], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "empty_userid.txt";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  </script>
+<hr>
+<section>
+  <h2>Update Notes</h2>
+  <p>These are the historical updates and changes made during the review process. Click below to download a copy.</p>
+  <ul id="update-notes">
+    <!-- Start update notes here -->
+    <li>06.09.25 - Added Standard 5, Standard 7, and Standard 8.</li>
+    <li>06.09.25 - Minor Updated to navigation and data tree.</li>
+    <li>06.09.25 - Added Update Notes.</li>
+    <!-- End update notes here -->
+  </ul>
+  <p><a href="#" onclick="downloadUpdateNotes()">Download Update Notes</a></p>
+</section>
+
+<script>
+  function downloadEmptyFile() {
+    const text = "User id: empty";
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "empty_userid.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadUpdateNotes() {
+    const items = document.querySelectorAll("#update-notes li");
+    let content = "Update Notes:\n\n";
+    items.forEach(item => {
+      content += "- " + item.textContent.trim() + "\n";
+    });
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "update_notes.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+</script>
+
 </body>
 </html>
