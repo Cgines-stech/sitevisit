@@ -750,6 +750,16 @@ const associatedDocNames = {
   "Standard1/1.10.docx.pdf": ["1.10 — Self Study", "Standard 1 — Self Study"],
   "Standard1/1.11.docx.pdf": ["1.11 — Self Study", "Standard 1 — Self Study"],
 
+  //Standard 4 Associated File Names
+  "Standard4/4.1.docx.pdf": ["4.1 — Self Study"],
+  "Standard4/4.2.docx.pdf": ["4.2 — Self Study p.1", "4.2 — Self Study p.2"],
+  "Standard4/4.3.docx.pdf": ["4.3 — Self Study"],
+  "Standard4/4.4.docx.pdf": ["4.4 — Self Study"],
+  "Standard4/4.5.docx.pdf": ["4.5 — Self Study"],
+  "Standard4/4.6.docx.pdf": ["4.6 — Self Study"],
+  "Standard4/4.7.docx.pdf": ["4.7 — Self Study p.1", "4.7 — Self Study p.2"],
+  "Standard4/4.8.docx.pdf": ["4.8 — Self Study"],
+
   // Standard 5 Associated File Names
   "Standard5/5.A.1.docx.pdf": ["5.A.1 — Self Study", "Standard 5 — Self Study"],
   "Standard5/5.A.2.docx.pdf": ["5.A.2 — Self Study", "Standard 5 — Self Study"],
@@ -837,7 +847,14 @@ const associatedDocNames = {
   "Standard8/8.D.2.docx.pdf": ["8.D.2 — Self Study", "Standard 8 — Self Study"],
   "Standard8/8.D.3.docx.pdf": ["8.D.3 — Self Study", "Standard 8 — Self Study"],
   "Standard8/8.E.1.docx.pdf": ["8.E.1 — Self Study", "Standard 8 — Self Study"],
-  "Standard8/8.E.2.docx.pdf": ["8.E.2 — Self Study", "Standard 8 — Self Study"]
+  "Standard8/8.E.2.docx.pdf": ["8.E.2 — Self Study", "Standard 8 — Self Study"],
+
+  // Standard 9 Associated File Names
+  "Standard9/9.1.docx.pdf": ["9.1 — Self Study"],
+  "Standard9/9.2 (Not Applicable).docx.pdf": ["9.2 — Self Study"],
+  "Standard9/9.3.docx.pdf": ["9.3 — Self Study p.1", "9.3 — Self Study p.2"],
+  "Standard9/9.4.docx.pdf": ["9.4 — Self Study"],
+  "Standard9/9.5.docx.pdf": ["9.5 — Self Study"]
 
   // default will be used if not listed here
 };
