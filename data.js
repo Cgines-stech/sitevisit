@@ -379,7 +379,7 @@ const folders = {
 };
 
 const associatedDocs = {
-
+/*
   // Conditions
   "0.A.1 Combined.docx.pdf": [""],
   "0.A.2.docx.pdf": [""],
@@ -434,8 +434,7 @@ const associatedDocs = {
   "0.G.4.docx.pdf": [""],
   "0.H.1.docx.pdf": [""],
 
-  //Worksheets
-// Worksheets
+  // Worksheets
   "Worksheets/0.A.1 Worksheet A.1.docx.pdf": [""],
   "Worksheets/0.A.1 Worksheet A.2.docx.pdf": [""],
   "Worksheets/0.A.1 Worksheet A.3.docx.pdf": [""],
@@ -511,7 +510,7 @@ const associatedDocs = {
   "Worksheets/0.A.20 Worksheet 23.2.docx.pdf": [""],
   "Worksheets/0.A.20 Worksheet 23.3.docx.pdf": [""],
   "Worksheets/0.A.20 Worksheet 23.4.docx.pdf": [""],
-
+*/
   //Standard1
   "Standard1/1.1.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf", "SupportFiles/Standard1/Standard1.pdf"],
   "Standard1/1.2.docx.pdf": ["SupportFiles/Standard1/SelfStudy2025_21.pdf", "SupportFiles/Standard1/Standard1.pdf"],
@@ -629,9 +628,8 @@ const associatedDocs = {
   "Standard9/9.2 (Not Applicable).docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf"],
   "Standard9/9.3.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_310.pdf", "SupportFiles/Standard9/SelfStudy2025_311.pdf"],
   "Standard9/9.4.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
-  "Standard9/9.5.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"],
+  "Standard9/9.5.docx.pdf": ["SupportFiles/Standard9/SelfStudy2025_311.pdf"]/*,
 
-  /*
   //Standard10
   "Standard10/10.A.1.docx.pdf": "",
   "Standard10/10.A.2.docx.pdf": "",
@@ -675,7 +673,6 @@ const associatedDocs = {
   "Standard10/10.E.3.docx.pdf": "",
   "Standard10/10.E.4.docx.pdf": "",
   "Standard10/10.E.5.docx.pdf": ""
-  */
 
   // ISC — Beaver
   "0.C.6 Worksheet Beaver.1.docx.pdf": [""],
@@ -736,7 +733,7 @@ const associatedDocs = {
   "0.C.6 Worksheet Richfield.16.docx.pdf": [""],
   "0.C.6 Worksheet Richfield.17.docx.pdf": [""],
   "0.C.6 Worksheet Richfield.18 (Not Applicable).docx.pdf": [""]
-
+  */
 };
 
 const associatedDocNames = {
