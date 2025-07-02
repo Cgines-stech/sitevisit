@@ -5,12 +5,50 @@ body {
   padding: 20px;
 }
 
+#dashboardContainer {
+  display: flex;
+  gap: 12px;
+}
+
+#dashboard {
+  flex: 0 0 60%;
+  padding-right: 0;
+}
+
+#errorPanel {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  flex: 0 0 40%;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: #fff7f7;
+  padding: 5px;
+  border-left: 4px solid #ff4d4d;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+#dashboard,
+#errorPanel {
+  padding: 10px;
+}
+
+/* Headings */
 h1 {
   color: #2c3e50;
   text-align: center;
   margin-bottom: 30px;
 }
 
+#errorPanel h2 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  color: #cc0000;
+}
+
+/* User Section */
 .user-section {
   background: #fff;
   border-radius: 8px;
@@ -24,6 +62,17 @@ h1 {
   color: teal;
 }
 
+.user-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  cursor: pointer;
+  background-color: #e0f7fa;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+/* Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -42,16 +91,11 @@ th {
   color: #333;
 }
 
-.user-header {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin: 20px 0 10px;
-  cursor: pointer;
-  background-color: #e0f7fa;
-  padding: 10px;
-  border-radius: 6px;
+.row-error {
+  background-color: #ffe6e6;
 }
 
+/* Folder Structure */
 .folder {
   margin-left: 20px;
 }
@@ -68,42 +112,43 @@ th {
   display: none;
 }
 
-.row-error {
-  background-color: #ffe6e6;
-}
- 
-#errorPanel {
-  position: fixed;
-  top: 80px;
-  right: 20px;
-  width: 300px;
-  max-height: 80vh;
-  overflow-y: auto;
-  background-color: #fff7f7;
-  padding: 5px;
-  border-left: 4px solid #ff4d4d;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
-  border-radius: 6px;
-}
-
-#errorPanel h2 {
-  margin-top: 0;
-  font-size: 1rem;
-  color: #cc0000;
-}
-
-#errorList {
+/* Error List */
+#errorList,
+#errorList ul {
   list-style-type: none;
   padding-left: 0;
+  margin-left: 0;
 }
 
 #errorList li {
-  margin: 8px 0;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #ffe5e5;
+  border-radius: 5px;
   cursor: pointer;
-  color: #b30000;
+  color: #8b0000;
+  transition: background-color 0.2s ease;
+}
+
+#errorList li:hover {
+  background-color: #fdd;
   text-decoration: underline;
 }
 
+#errorList li ul {
+  list-style-type: disc;
+  margin-top: 5px;
+  margin-left: 15px;
+}
+
+#errorList li ul li {
+  background: none;
+  padding: 0;
+  margin-bottom: 5px;
+  color: #990000;
+}
+
+/* Modal */
 #commentModal {
   position: fixed;
   top: 50%;
@@ -111,7 +156,7 @@ th {
   transform: translate(-50%, -50%);
   background: #ffffff;
   padding: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   border-radius: 8px;
   width: 300px;
@@ -130,67 +175,7 @@ th {
   color: #333;
 }
 
+/* Utility */
 .hidden {
   display: none;
-}
-
-#dashboardContainer {
-  display: flex;
-  gap: 20px;
-}
-
-#dashboard {
-  flex: 0 0 60%;
-  padding-right: 5px;
-}
-
-#errorPanel {
-  flex: 0 0 40%;
-  max-height: 80vh;
-  overflow-y: auto;
-  background-color: #fff7f7;
-  padding: 5px;
-  border-left: 4px solid #ff4d4d;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
-  border-radius: 6px;
-}
-
-#errorPanel h2 {
-  margin-top: 0;
-  font-size: 1.1rem;
-  color: #cc0000;
-  margin-bottom: 10px;
-}
-
-#errorList {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-#errorList li {
-  margin-bottom: 10px;
-  padding: 10px;
-  background: #ffe5e5;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #8b0000;
-  transition: background-color 0.2s ease;
-}
-
-#errorList li:hover {
-  background-color: #fdd;
-  text-decoration: underline;
-}
-
-#errorList ul {
-  list-style-type: disc;
-  margin-top: 5px;
-  margin-left: 15px;
-}
-
-#errorList li ul li {
-  background: none;
-  padding: 0;
-  margin-bottom: 5px;
-  color: #990000;
 }
