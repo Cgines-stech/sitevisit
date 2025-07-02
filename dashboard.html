@@ -31,6 +31,11 @@
 </div>
 
   <script>
+
+    function cleanFileName(fileName) {
+      return fileName.replace(/\.docx\.pdf$/i, '').replace(/\.pdf$/i, '');
+    }
+
     const firebaseConfig = {
       apiKey: "AIzaSyDANwGnTgz2Sd-VS-9tjrsT5FvsUpe2NQc",
       authDomain: "sitevisit2025-6a6ce.firebaseapp.com",
@@ -47,7 +52,7 @@
       const row = document.createElement("tr");
       row.className = entry.status === "No" ? "row-error" : "";
       row.innerHTML = `
-        <td>${entry.fileKey}</td>
+        <td>${cleanFileName(entry.fileKey)}</td>
         <td>${entry.status}</td>
         <td>${entry.comment || "-"}</td>
       `;
@@ -282,12 +287,12 @@ Object.entries(groupedByUser).forEach(([userId, issues]) => {
 
   issues.forEach(issue => {
     const li = document.createElement("li");
-    li.textContent = issue.fileKey;
+    li.textContent = cleanFileName(issue.fileKey);
     li.style.fontWeight = "normal";
     li.style.cursor = "pointer";
     li.addEventListener("click", (e) => {
       e.stopPropagation();
-      showCommentModal(issue.comment, issue.fileKey);
+      showCommentModal(issue.comment, cleanFileName(issue.fileKey));
     });
     issueList.appendChild(li);
   });
