@@ -236,8 +236,8 @@
           Object.entries(subs).forEach(([sub, items]) => {
             if (sub === "__root__") return;
             const subPath = `${folder}/${sub}`;
-const subPercent = computeFixedCompletionPercentage(subPath, items);
-const subNode = createFolderNode(`${sub} (${subPercent}% complete)`, folderNode);
+            const subPercent = computeFixedCompletionPercentage(subPath, items);
+            const subNode = createFolderNode(`${sub} (${subPercent}% complete)`, folderNode);
 
             const table = document.createElement("table");
             table.innerHTML = `
@@ -277,6 +277,9 @@ Object.entries(groupedByUser).forEach(([userId, issues]) => {
   issueList.style.display = "none";
   issueList.style.paddingLeft = "15px";
 
+  // ✅ Sort fileKeys alphabetically before displaying
+  issues.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
+
   issues.forEach(issue => {
     const li = document.createElement("li");
     li.textContent = issue.fileKey;
@@ -296,6 +299,7 @@ Object.entries(groupedByUser).forEach(([userId, issues]) => {
   errorListEl.appendChild(userItem);
   errorListEl.appendChild(issueList);
 });
+
 
     }
 
