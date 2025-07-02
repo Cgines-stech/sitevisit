@@ -25,6 +25,7 @@
 <div id="commentModal" class="hidden">
   <div class="modal-content">
     <span id="closeModal">&times;</span>
+    <h3 id="modalItemHeader" style="margin-top:0;"></h3>
     <p id="commentText"></p>
   </div>
 </div>
@@ -131,12 +132,13 @@
         : 0;
     }
 
-    function showCommentModal(comment) {
-      const modal = document.getElementById("commentModal");
-      const commentText = document.getElementById("commentText");
-      commentText.textContent = comment;
-      modal.classList.remove("hidden");
-    }
+    function showCommentModal(comment, fileKey) {
+  const modal = document.getElementById("commentModal");
+  document.getElementById("modalItemHeader").textContent = `📝 ${fileKey}`;
+  document.getElementById("commentText").textContent = comment;
+  modal.classList.remove("hidden");
+}
+
 
     document.getElementById("closeModal").onclick = () => {
       document.getElementById("commentModal").classList.add("hidden");
@@ -282,7 +284,7 @@ Object.entries(groupedByUser).forEach(([userId, issues]) => {
     li.style.cursor = "pointer";
     li.addEventListener("click", (e) => {
       e.stopPropagation();
-      showCommentModal(issue.comment);
+      showCommentModal(issue.comment, issue.fileKey);
     });
     issueList.appendChild(li);
   });
