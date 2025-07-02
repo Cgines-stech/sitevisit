@@ -134,7 +134,7 @@
 
     function showCommentModal(comment, fileKey) {
   const modal = document.getElementById("commentModal");
-  document.getElementById("modalItemHeader").textContent = `📝 ${fileKey}`;
+  document.getElementById("modalItemHeader").textContent = `${fileKey}`;
   document.getElementById("commentText").textContent = comment;
   modal.classList.remove("hidden");
 }
