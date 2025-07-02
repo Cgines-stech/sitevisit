@@ -109,9 +109,9 @@
       "Standard8": 21,
       "Standard9": 5,
       "Standard10": 42,
-      "ISC — Beaver": 18,
-      "ISC — Kane": 18,
-      "ISC — Richfield": 18
+      "ISC - Beaver": 18,
+      "ISC - Kane": 18,
+      "ISC - Richfield": 18
     };
 
     function computeFixedCompletionPercentage(folder, entries) {
@@ -259,12 +259,42 @@ const subNode = createFolderNode(`${sub} (${subPercent}% complete)`, folderNode)
       const errorListEl = document.getElementById("errorList");
       errorListEl.innerHTML = ""; // Clear existing if needed
 
-      allNoEntries.forEach(issue => {
-        const li = document.createElement("li");
-        li.textContent = `${issue.userId}: ${issue.fileKey}`;
-        li.addEventListener("click", () => showCommentModal(issue.comment));
-        errorListEl.appendChild(li);
-      });
+      const groupedByUser = {};
+allNoEntries.forEach(issue => {
+  if (!groupedByUser[issue.userId]) groupedByUser[issue.userId] = [];
+  groupedByUser[issue.userId].push(issue);
+});
+
+Object.entries(groupedByUser).forEach(([userId, issues]) => {
+  const userItem = document.createElement("li");
+  userItem.textContent = userId;
+  userItem.style.fontWeight = "bold";
+  userItem.style.cursor = "pointer";
+
+  const issueList = document.createElement("ul");
+  issueList.style.display = "none";
+  issueList.style.paddingLeft = "15px";
+
+  issues.forEach(issue => {
+    const li = document.createElement("li");
+    li.textContent = issue.fileKey;
+    li.style.fontWeight = "normal";
+    li.style.cursor = "pointer";
+    li.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showCommentModal(issue.comment);
+    });
+    issueList.appendChild(li);
+  });
+
+  userItem.addEventListener("click", () => {
+    issueList.style.display = issueList.style.display === "none" ? "block" : "none";
+  });
+
+  errorListEl.appendChild(userItem);
+  errorListEl.appendChild(issueList);
+});
+
     }
 
     loadDashboard();

@@ -80,7 +80,7 @@ th {
   max-height: 80vh;
   overflow-y: auto;
   background-color: #fff7f7;
-  padding: 15px;
+  padding: 5px;
   border-left: 4px solid #ff4d4d;
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
   border-radius: 6px;
@@ -110,7 +110,7 @@ th {
   left: 50%;
   transform: translate(-50%, -50%);
   background: #ffffff;
-  padding: 20px;
+  padding: 10px;
   box-shadow: 0 0 15px rgba(0,0,0,0.3);
   z-index: 1000;
   border-radius: 8px;
@@ -140,16 +140,16 @@ th {
 }
 
 #dashboard {
-  flex: 0 0 70%;
-  padding-right: 10px;
+  flex: 0 0 60%;
+  padding-right: 5px;
 }
 
 #errorPanel {
-  flex: 0 0 30%;
+  flex: 0 0 40%;
   max-height: 80vh;
   overflow-y: auto;
   background-color: #fff7f7;
-  padding: 15px;
+  padding: 5px;
   border-left: 4px solid #ff4d4d;
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
   border-radius: 6px;
@@ -180,4 +180,17 @@ th {
 #errorList li:hover {
   background-color: #fdd;
   text-decoration: underline;
+}
+
+#errorList ul {
+  list-style-type: disc;
+  margin-top: 5px;
+  margin-left: 15px;
+}
+
+#errorList li ul li {
+  background: none;
+  padding: 0;
+  margin-bottom: 5px;
+  color: #990000;
 }
