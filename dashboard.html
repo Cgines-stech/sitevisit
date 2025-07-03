@@ -27,8 +27,17 @@
     <span id="closeModal">&times;</span>
     <h3 id="modalItemHeader" style="margin-top:0;"></h3>
     <p id="commentText"></p>
+
+    <label for="statusUpdate">Change Status:</label>
+    <select id="statusUpdate">
+      <option value="Yes">Yes</option>
+      <option value="N/A">N/A</option>
+      <option value="No">No</option>
+    </select>
+    <button id="saveStatusBtn">Save</button>
   </div>
 </div>
+
 
   <script>
 
@@ -153,12 +162,46 @@
         : 0;
     }
 
-    function showCommentModal(comment, fileKey) {
+    let currentModalEntry = null;
+
+function showCommentModal(comment, fileKey, userId, item, currentStatus) {
   const modal = document.getElementById("commentModal");
-  document.getElementById("modalItemHeader").textContent = `${fileKey}`;
+  document.getElementById("modalItemHeader").textContent = `${fileKey} - ${item}`;
   document.getElementById("commentText").textContent = comment;
+  document.getElementById("statusUpdate").value = currentStatus;
+  currentModalEntry = { userId, fileKey, item };
+
   modal.classList.remove("hidden");
 }
+
+document.getElementById("saveStatusBtn").onclick = async () => {
+  const newStatus = document.getElementById("statusUpdate").value;
+  const { userId, fileKey, item } = currentModalEntry;
+
+  try {
+    const userDocRef = db.collection("checklists").doc(userId);
+    const doc = await userDocRef.get();
+
+    if (doc.exists) {
+      const data = doc.data();
+      if (!data.checklist[fileKey]) data.checklist[fileKey] = {};
+      if (!data.checklist[fileKey][item]) data.checklist[fileKey][item] = {};
+
+      data.checklist[fileKey][item].status = newStatus;
+
+      await userDocRef.set(data);
+      alert("✅ Status updated successfully!");
+      location.reload();  // Refresh the page to reflect updates
+    } else {
+      alert("⚠️ Checklist document not found for user.");
+    }
+  } catch (error) {
+    console.error("Error updating status:", error);
+    alert("❌ Failed to update status.");
+  }
+
+  document.getElementById("commentModal").classList.add("hidden");
+};
 
 
     document.getElementById("closeModal").onclick = () => {
@@ -307,9 +350,10 @@ Object.entries(groupedByUser).forEach(([userId, issues]) => {
     li.style.fontWeight = "normal";
     li.style.cursor = "pointer";
     li.addEventListener("click", (e) => {
-      e.stopPropagation();
-      showCommentModal(issue.comment, cleanFileName(issue.fileKey));
-    });
+  e.stopPropagation();
+  showCommentModal(issue.comment, cleanFileName(issue.fileKey), issue.userId, issue.item, "No");
+});
+
     issueList.appendChild(li);
   });
 
