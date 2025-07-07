@@ -1,0 +1,203 @@
+/* style4.css */
+body {
+  font-family: sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+}
+
+#dashboardContainer {
+  display: flex;
+  gap: 12px;
+}
+
+#dashboard {
+  flex: 0 0 70%;
+  padding-right: 0;
+}
+
+#errorPanel {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  /* flex: 0 0 30%; */
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: #fff7f7;
+  padding: 5px;
+  border-left: 4px solid #ff4d4d;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+#dashboard,
+#errorPanel {
+  padding: 10px;
+}
+
+/* Headings */
+h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#errorPanel h2 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  color: #cc0000;
+}
+
+/* User Section */
+.user-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.user-section h2 {
+  margin-top: 0;
+  color: teal;
+}
+
+.user-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 20px 0 10px;
+  cursor: pointer;
+  background-color: #e0f7fa;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.row-error {
+  background-color: #ffe6e6;
+}
+
+/* Folder Structure */
+.folder {
+  margin-left: 20px;
+}
+
+.folder-label {
+  font-weight: bold;
+  cursor: pointer;
+  margin: 10px 0 5px;
+  color: #007b8a;
+}
+
+.folder-content {
+  margin-left: 20px;
+  display: none;
+}
+
+/* Error List */
+#errorList,
+#errorList ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+#errorList li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #ffe5e5;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #8b0000;
+  transition: background-color 0.2s ease;
+}
+
+#errorList li:hover {
+  background-color: #fdd;
+  text-decoration: underline;
+}
+
+#errorList li ul {
+  list-style-type: disc;
+  margin-top: 5px;
+  margin-left: 15px;
+}
+
+#errorList li ul li {
+  background: none;
+  padding: 0;
+  margin-bottom: 5px;
+  color: #990000;
+}
+
+/* Modal */
+#commentModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  border-radius: 8px;
+  width: 600px;
+}
+
+.modal-content {
+  position: relative;
+}
+
+#closeModal {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #333;
+}
+
+/* Utility */
+.hidden {
+  display: none;
+}
+
+#modalItemHeader {
+  margin-top: 0;
+  font-weight: normal;
+}
+
+#adminBanner {
+  background-color: orange;
+  color: black;
+  padding: 12px 20px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
+}
+
+#adminBanner .underlined {
+  text-decoration: underline;
+}
