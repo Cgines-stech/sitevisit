@@ -191,53 +191,20 @@ document.getElementById("saveStatusBtn").onclick = async () => {
   try {
     const userDocRef = db.collection("checklists").doc(userId);
 
-    const encodedFileKey = encodeFirestoreKey(fileKey);
-    const encodedItem = encodeFirestoreKey(item);
-
     await userDocRef.set({
-  checklist: {
-    [fileKey]: {
-      [item]: {
-        status: newStatus,
-        comment: newComment
-      }
-    }
-  }
-}, { merge: true });
-
-
-    // ✅ Live DOM Update
-    const issueListEl = document.getElementById("errorList");
-    issueListEl.querySelectorAll("li").forEach(li => {
-      if (li.textContent.includes(cleanFileName(fileKey))) {
-        li.remove();
-      }
-    });
-
-    // ✅ Update the row in the dashboard table
-    const tables = document.querySelectorAll("table");
-    tables.forEach(table => {
-      const rows = table.querySelectorAll("tr");
-      rows.forEach(row => {
-        const fileCell = row.cells?.[0];
-        const statusCell = row.cells?.[1];
-        const commentCell = row.cells?.[2];
-
-        if (fileCell && cleanFileName(fileKey) === fileCell.textContent.trim()) {
-          statusCell.textContent = newStatus;
-          commentCell.textContent = newComment;
-
-          if (newStatus !== "No") {
-            row.classList.remove("row-error");
-          } else {
-            row.classList.add("row-error");
+      checklist: {
+        [fileKey]: {
+          [item]: {
+            status: newStatus,
+            comment: newComment
           }
         }
-      });
-    });
+      }
+    }, { merge: true });
 
     alert("✅ Status updated successfully!");
-    // 🔁 Reload the dashboard to reflect updates in all views
+
+    // 🔁 Refresh dashboard UI
     document.getElementById("dashboard").innerHTML = "";
     document.getElementById("errorList").innerHTML = "";
     await loadDashboard();
