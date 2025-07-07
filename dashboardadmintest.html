@@ -179,6 +179,10 @@ function showCommentModal(comment, fileKey, userId, item, currentStatus) {
   modal.classList.remove("hidden");
 }
 
+function encodeFirestoreKey(key) {
+  return key.replace(/[\[\].#/\$]/g, "_").replace(/\//g, "__");
+}
+
 document.getElementById("saveStatusBtn").onclick = async () => {
   const newStatus = document.getElementById("statusUpdate").value;
   const newComment = document.getElementById("commentUpdate").value;
@@ -186,9 +190,13 @@ document.getElementById("saveStatusBtn").onclick = async () => {
 
   try {
     const userDocRef = db.collection("checklists").doc(userId);
+
+    const encodedFileKey = encodeFirestoreKey(fileKey);
+    const encodedItem = encodeFirestoreKey(item);
+
     await userDocRef.update({
-      [`checklist.${fileKey}.${item}.status`]: newStatus,
-      [`checklist.${fileKey}.${item}.comment`]: newComment
+      [`checklist.${encodedFileKey}.${encodedItem}.status`]: newStatus,
+      [`checklist.${encodedFileKey}.${encodedItem}.comment`]: newComment
     });
 
     // ✅ Live DOM Update
