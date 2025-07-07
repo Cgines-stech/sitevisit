@@ -1,4 +1,4 @@
-<!-- dashboard.html -->
+<!-- dashboardadmintest.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,6 +34,11 @@
       <option value="N/A">N/A</option>
       <option value="No">No</option>
     </select>
+
+    <!-- NEW: Comment editing input -->
+    <label for="commentUpdate">Edit Comment:</label>
+    <textarea id="commentUpdate" rows="3" style="width:100%;"></textarea>
+
     <button id="saveStatusBtn">Save</button>
   </div>
 </div>
@@ -176,59 +181,50 @@ function showCommentModal(comment, fileKey, userId, item, currentStatus) {
 
 document.getElementById("saveStatusBtn").onclick = async () => {
   const newStatus = document.getElementById("statusUpdate").value;
+  const newComment = document.getElementById("commentUpdate").value;
   const { userId, fileKey, item } = currentModalEntry;
 
   try {
     const userDocRef = db.collection("checklists").doc(userId);
-    const doc = await userDocRef.get();
+    await userDocRef.update({
+      [`checklist.${fileKey}.${item}.status`]: newStatus,
+      [`checklist.${fileKey}.${item}.comment`]: newComment
+    });
 
-    if (doc.exists) {
-      const data = doc.data();
-      if (!data.checklist[fileKey]) data.checklist[fileKey] = {};
-      if (!data.checklist[fileKey][item]) data.checklist[fileKey][item] = {};
+    // ✅ Live DOM Update
+    const issueListEl = document.getElementById("errorList");
+    issueListEl.querySelectorAll("li").forEach(li => {
+      if (li.textContent.includes(cleanFileName(fileKey))) {
+        li.remove();
+      }
+    });
 
-      // Update the entry
-      data.checklist[fileKey][item].status = newStatus;
+    // ✅ Update the row in the dashboard table
+    const tables = document.querySelectorAll("table");
+    tables.forEach(table => {
+      const rows = table.querySelectorAll("tr");
+      rows.forEach(row => {
+        const fileCell = row.cells?.[0];
+        const statusCell = row.cells?.[1];
+        const commentCell = row.cells?.[2];
 
-      // Push to Firestore
-      await userDocRef.set(data);
+        if (fileCell && cleanFileName(fileKey) === fileCell.textContent.trim()) {
+          statusCell.textContent = newStatus;
+          commentCell.textContent = newComment;
 
-      // ✅ Live DOM Update
-      const issueListEl = document.getElementById("errorList");
-      issueListEl.querySelectorAll("li").forEach(li => {
-        if (li.textContent.includes(cleanFileName(fileKey))) {
-          li.remove();
+          if (newStatus !== "No") {
+            row.classList.remove("row-error");
+          } else {
+            row.classList.add("row-error");
+          }
         }
       });
+    });
 
-      // ✅ Update the row status in folder table
-      const tables = document.querySelectorAll("table");
-      tables.forEach(table => {
-        const rows = table.querySelectorAll("tr");
-        rows.forEach(row => {
-          const fileCell = row.cells?.[0];
-          const statusCell = row.cells?.[1];
-
-          if (fileCell && cleanFileName(fileKey) === fileCell.textContent.trim()) {
-            statusCell.textContent = newStatus;
-
-            // Remove "row-error" class if changed from "No"
-            if (newStatus !== "No") {
-              row.classList.remove("row-error");
-            } else {
-              row.classList.add("row-error");
-            }
-          }
-        });
-      });
-
-      alert("✅ Status updated successfully!");
-    } else {
-      alert("⚠️ Checklist document not found for user.");
-    }
+    alert("✅ Status updated successfully!");
   } catch (error) {
     console.error("Error updating status:", error);
-    alert("❌ Failed to update status.");
+    alert("❌ Failed to update status. See console for details.");
   }
 
   document.getElementById("commentModal").classList.add("hidden");
