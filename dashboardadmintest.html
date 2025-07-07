@@ -237,6 +237,10 @@ document.getElementById("saveStatusBtn").onclick = async () => {
     });
 
     alert("✅ Status updated successfully!");
+    // 🔁 Reload the dashboard to reflect updates in all views
+    document.getElementById("dashboard").innerHTML = "";
+    document.getElementById("errorList").innerHTML = "";
+    await loadDashboard();
   } catch (error) {
     console.error("Error updating status:", error);
     alert("❌ Failed to update status. See console for details.");
