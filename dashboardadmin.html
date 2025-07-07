@@ -176,7 +176,7 @@
 
 function showCommentModal(comment, fileKey, userId, item, currentStatus) {
   const modal = document.getElementById("commentModal");
-  document.getElementById("modalItemHeader").textContent = `${cleanFileName(fileKey)} - ${item}`;
+  document.getElementById("modalItemHeader").textContent = `${cleanFileName(fileKey)}`;
   document.getElementById("commentText").textContent = comment;
   document.getElementById("statusUpdate").value = currentStatus;
   currentModalEntry = { userId, fileKey, item };
