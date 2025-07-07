@@ -194,10 +194,17 @@ document.getElementById("saveStatusBtn").onclick = async () => {
     const encodedFileKey = encodeFirestoreKey(fileKey);
     const encodedItem = encodeFirestoreKey(item);
 
-    await userDocRef.update({
-      [`checklist.${encodedFileKey}.${encodedItem}.status`]: newStatus,
-      [`checklist.${encodedFileKey}.${encodedItem}.comment`]: newComment
-    });
+    await userDocRef.set({
+  checklist: {
+    [fileKey]: {
+      [item]: {
+        status: newStatus,
+        comment: newComment
+      }
+    }
+  }
+}, { merge: true });
+
 
     // ✅ Live DOM Update
     const issueListEl = document.getElementById("errorList");
