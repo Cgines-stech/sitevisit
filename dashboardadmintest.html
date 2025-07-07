@@ -171,7 +171,7 @@
 
 function showCommentModal(comment, fileKey, userId, item, currentStatus) {
   const modal = document.getElementById("commentModal");
-  document.getElementById("modalItemHeader").textContent = `${fileKey} - ${item}`;
+  document.getElementById("modalItemHeader").textContent = `${cleanFileName(fileKey)} - ${item}`;
   document.getElementById("commentText").textContent = comment;
   document.getElementById("statusUpdate").value = currentStatus;
   currentModalEntry = { userId, fileKey, item };
@@ -377,7 +377,7 @@ Object.entries(groupedByUser).forEach(([userId, issues]) => {
     li.style.cursor = "pointer";
     li.addEventListener("click", (e) => {
   e.stopPropagation();
-  showCommentModal(issue.comment, cleanFileName(issue.fileKey), issue.userId, issue.item, "No");
+  showCommentModal(issue.comment, issue.fileKey, issue.userId, issue.item, "No");
 });
 
     issueList.appendChild(li);
