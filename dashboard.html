@@ -55,37 +55,38 @@
       return row;
     }
 
-    function createFolderNode(name, percent, parent) {
-      const folderDiv = document.createElement("div");
-      folderDiv.className = "folder";
+    function createFolderNode(name, percent, parent, hidePercent = false) {
+  const folderDiv = document.createElement("div");
+  folderDiv.className = "folder";
 
-      const label = document.createElement("div");
-      label.className = "folder-label";
+  const label = document.createElement("div");
+  label.className = "folder-label";
 
-      const titleSpan = document.createElement("span");
-      titleSpan.textContent = name;
+  const titleSpan = document.createElement("span");
+  titleSpan.textContent = name;
+  label.appendChild(titleSpan); // ✅ Always append the title first
 
-      const percentSpan = document.createElement("span");
-      percentSpan.textContent = ` (${percent}% complete)`;
-      percentSpan.style.marginLeft = "4px";
-      percentSpan.style.color = percent < 100 ? "red" : "green";
+  if (!hidePercent) {
+    const percentSpan = document.createElement("span");
+    percentSpan.textContent = ` (${percent}% complete)`;
+    percentSpan.style.marginLeft = "4px";
+    percentSpan.style.color = percent < 100 ? "red" : "green";
+    label.appendChild(percentSpan); // ✅ Only append if created
+  }
 
-      label.appendChild(titleSpan);
-      label.appendChild(percentSpan);
+  const content = document.createElement("div");
+  content.className = "folder-content";
+  content.style.display = "none";
 
-      const content = document.createElement("div");
-      content.className = "folder-content";
-      content.style.display = "none";
+  label.addEventListener("click", () => {
+    content.style.display = content.style.display === "none" ? "block" : "none";
+  });
 
-      label.addEventListener("click", () => {
-        content.style.display = content.style.display === "none" ? "block" : "none";
-      });
-
-      folderDiv.appendChild(label);
-      folderDiv.appendChild(content);
-      parent.appendChild(folderDiv);
-      return content;
-    }
+  folderDiv.appendChild(label);
+  folderDiv.appendChild(content);
+  parent.appendChild(folderDiv);
+  return content;
+}
 
     const expectedFileCounts = {
       "Conditions": 52,
@@ -217,19 +218,24 @@
         });
 
         Object.entries(folderMap).forEach(([folder, subs]) => {
-          const folderNode = createFolderNode(folder, 0, userContent);
+          let folderPercent = 0;
+let allEntries = Object.values(subs).flat();
+folderPercent = computeFixedCompletionPercentage(folder, allEntries);
+const hidePercent = folder === "Standard2";
+const folderNode = createFolderNode(folder, folderPercent, userContent, hidePercent);
+
+
 
           if (subs["__root__"]) {
             const rootEntries = subs["__root__"];
-            const percent = computeFixedCompletionPercentage(folder, rootEntries);
+            const rootKey = rootEntries[0]?.fileKey?.split(":")[0] || folder;
+            const percent = computeFixedCompletionPercentage(rootKey, rootEntries);
             const table = document.createElement("table");
             table.innerHTML = `
               <tr><th>File</th><th>Status</th><th>Comment</th></tr>
             `;
             rootEntries.forEach(entry => table.appendChild(createRow(entry)));
             folderNode.appendChild(table);
-            folderNode.previousSibling.querySelector("span:nth-child(2)").textContent = ` (${percent}% complete)`;
-            folderNode.previousSibling.querySelector("span:nth-child(2)").style.color = percent < 100 ? "red" : "green";
           }
 
           Object.entries(subs).forEach(([sub, items]) => {
