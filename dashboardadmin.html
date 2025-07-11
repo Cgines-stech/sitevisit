@@ -1,60 +1,52 @@
-<!-- dashboardadmintest.html -->
+<!-- dashboardadmin.html -->
+<!-- Save as dashboardadmin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Checklist Dashboard</title>
-  <link rel="stylesheet" href="style4.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checklist Admin Dashboard</title>
+  <link rel="stylesheet" href="style4.css" />
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <!-- 🔒 Admin Notice Banner -->
   <div id="adminBanner">
     📢 You are viewing the <span class="underlined">Admin Version</span> of the Checklist Dashboard. Changes here affect all users.
   </div>
 
   <h1>User Checklist Dashboard - ADMIN Version 🔐</h1>
   <div id="dashboardContainer">
-  <div id="dashboard"></div>
+    <div id="dashboard"></div>
 
-  <!-- Error Panel -->
-  <div id="errorPanel">
-    <h2>⚠️ Issues Marked "No"</h2>
-    <ul id="errorList"></ul>
+    <div id="errorPanel">
+      <h2>⚠️ Issues Marked "No"</h2>
+      <ul id="errorList"></ul>
+    </div>
   </div>
-</div>
 
-<!-- Modal for showing comments -->
-<div id="commentModal" class="hidden">
-  <div class="modal-content">
-    <span id="closeModal">&times;</span>
-    <h3 id="modalItemHeader" style="margin-top:0;"></h3>
-    <p id="commentText"></p>
+  <!-- Modal -->
+  <div id="commentModal" class="hidden">
+    <div class="modal-content">
+      <span id="closeModal">&times;</span>
+      <h3 id="modalItemHeader" style="margin-top:0;"></h3>
+      <p id="commentText"></p>
 
-    <label for="statusUpdate">Change Status:</label>
-    <select id="statusUpdate">
-      <option value="Yes">Yes</option>
-      <option value="N/A">N/A</option>
-      <option value="No">No</option>
-    </select>
+      <label for="statusUpdate">Change Status:</label>
+      <select id="statusUpdate">
+        <option value="Yes">Yes</option>
+        <option value="N/A">N/A</option>
+        <option value="No">No</option>
+      </select>
 
-    <!-- NEW: Comment editing input -->
-    <label for="commentUpdate">Edit Comment:</label>
-    <textarea id="commentUpdate" rows="3" style="width:100%;"></textarea>
+      <label for="commentUpdate">Edit Comment:</label>
+      <textarea id="commentUpdate" rows="3" style="width:100%;"></textarea>
 
-    <button id="saveStatusBtn">Save</button>
+      <button id="saveStatusBtn">Save</button>
+    </div>
   </div>
-</div>
-
 
   <script>
-
-    function cleanFileName(fileName) {
-      return fileName.replace(/\.docx\.pdf$/i, '').replace(/\.pdf$/i, '');
-    }
-
     const firebaseConfig = {
       apiKey: "AIzaSyDANwGnTgz2Sd-VS-9tjrsT5FvsUpe2NQc",
       authDomain: "sitevisit2025-6a6ce.firebaseapp.com",
@@ -66,55 +58,7 @@
 
     const dashboard = document.getElementById("dashboard");
     let allNoEntries = [];
-
-    function createRow(entry) {
-      const row = document.createElement("tr");
-      row.className = entry.status === "No" ? "row-error" : "";
-      row.innerHTML = `
-        <td>${cleanFileName(entry.fileKey)}</td>
-        <td>${entry.status}</td>
-        <td>${entry.comment || "-"}</td>
-      `;
-      return row;
-    }
-
-    function createFolderNode(name, percent, parent) {
-  const folderDiv = document.createElement("div");
-  folderDiv.className = "folder";
-
-  const label = document.createElement("div");
-  label.className = "folder-label";
-
-  // Create label text node
-  const titleSpan = document.createElement("span");
-  titleSpan.textContent = name;
-
-  // Create percentage span and apply red if not 100%
-  const percentSpan = document.createElement("span");
-  percentSpan.textContent = ` (${percent}% complete)`;
-  percentSpan.style.marginLeft = "4px";
-  if (percent < 100) {
-    percentSpan.style.color = "red";
-  } else {
-  percentSpan.style.color = "green";
-  }
-
-  label.appendChild(titleSpan);
-  label.appendChild(percentSpan);
-
-  const content = document.createElement("div");
-  content.className = "folder-content";
-  content.style.display = "none";
-
-  label.addEventListener("click", () => {
-    content.style.display = content.style.display === "none" ? "block" : "none";
-  });
-
-  folderDiv.appendChild(label);
-  folderDiv.appendChild(content);
-  parent.appendChild(folderDiv);
-  return content;
-}
+    let currentModalEntry = null;
 
     const expectedFileCounts = {
       "Conditions": 52,
@@ -155,80 +99,113 @@
       "ISC - Richfield": 18
     };
 
+    function cleanFileName(fileName) {
+      return fileName.replace(/\.docx\.pdf$/i, '').replace(/\.pdf$/i, '');
+    }
+
     function computeFixedCompletionPercentage(folder, entries) {
-      const key = folder.includes("/") ? folder : `${folder}`;
-      const expectedCount = expectedFileCounts[key] || 0;
-
+      const expectedCount = expectedFileCounts[folder] || 0;
       const uniqueCompletedFiles = new Set();
-
       entries.forEach(e => {
         if (e.status === "Yes" || e.status === "N/A") {
           uniqueCompletedFiles.add(e.fileKey);
         }
       });
-
       return expectedCount > 0
         ? Math.round((uniqueCompletedFiles.size / expectedCount) * 100)
         : 0;
     }
 
-    let currentModalEntry = null;
+    function createRow(entry) {
+      const row = document.createElement("tr");
+      row.className = entry.status === "No" ? "row-error" : "";
+      row.innerHTML = `
+        <td>${cleanFileName(entry.fileKey)}</td>
+        <td>${entry.status}</td>
+        <td>${entry.comment || "-"}</td>
+      `;
+      row.addEventListener("click", () => {
+        showCommentModal(entry.comment, entry.fileKey, entry.userId, entry.item, entry.status);
+      });
+      return row;
+    }
 
-function showCommentModal(comment, fileKey, userId, item, currentStatus) {
-  const modal = document.getElementById("commentModal");
-  document.getElementById("modalItemHeader").textContent = `${cleanFileName(fileKey)}`;
-  document.getElementById("commentText").textContent = comment;
-  document.getElementById("statusUpdate").value = currentStatus;
-  currentModalEntry = { userId, fileKey, item };
+    function createFolderNode(name, percent, parent, hidePercent = false) {
+      const folderDiv = document.createElement("div");
+      folderDiv.className = "folder";
+      const label = document.createElement("div");
+      label.className = "folder-label";
 
-  modal.classList.remove("hidden");
-}
+      const titleSpan = document.createElement("span");
+      titleSpan.textContent = name;
+      label.appendChild(titleSpan);
 
-function encodeFirestoreKey(key) {
-  return key.replace(/[\[\].#/\$]/g, "_").replace(/\//g, "__");
-}
-
-document.getElementById("saveStatusBtn").onclick = async () => {
-  const newStatus = document.getElementById("statusUpdate").value;
-  const newComment = document.getElementById("commentUpdate").value;
-  const { userId, fileKey, item } = currentModalEntry;
-
-  try {
-    const userDocRef = db.collection("checklists").doc(userId);
-
-    await userDocRef.set({
-      checklist: {
-        [fileKey]: {
-          [item]: {
-            status: newStatus,
-            comment: newComment
-          }
-        }
+      if (!hidePercent) {
+        const percentSpan = document.createElement("span");
+        percentSpan.textContent = ` (${percent}% complete)`;
+        percentSpan.style.marginLeft = "4px";
+        percentSpan.style.color = percent < 100 ? "red" : "green";
+        label.appendChild(percentSpan);
       }
-    }, { merge: true });
 
-    alert("✅ Status updated successfully!");
+      const content = document.createElement("div");
+      content.className = "folder-content";
+      content.style.display = "none";
+      label.addEventListener("click", () => {
+        content.style.display = content.style.display === "none" ? "block" : "none";
+      });
 
-    // 🔁 Refresh dashboard UI
-    document.getElementById("dashboard").innerHTML = "";
-    document.getElementById("errorList").innerHTML = "";
-    await loadDashboard();
-  } catch (error) {
-    console.error("Error updating status:", error);
-    alert("❌ Failed to update status. See console for details.");
-  }
+      folderDiv.appendChild(label);
+      folderDiv.appendChild(content);
+      parent.appendChild(folderDiv);
+      return content;
+    }
 
-  document.getElementById("commentModal").classList.add("hidden");
-};
+    function showCommentModal(comment, fileKey, userId, item, currentStatus) {
+      currentModalEntry = { userId, fileKey, item };
+      document.getElementById("modalItemHeader").textContent = cleanFileName(fileKey);
+      document.getElementById("commentText").textContent = comment;
+      document.getElementById("commentUpdate").value = comment || "";
+      document.getElementById("statusUpdate").value = currentStatus;
+      document.getElementById("commentModal").classList.remove("hidden");
+    }
+
+    document.getElementById("saveStatusBtn").onclick = async () => {
+      const { userId, fileKey, item } = currentModalEntry;
+      const newStatus = document.getElementById("statusUpdate").value;
+      const newComment = document.getElementById("commentUpdate").value;
+
+      try {
+        await db.collection("checklists").doc(userId).set({
+          checklist: {
+            [fileKey]: {
+              [item]: {
+                status: newStatus,
+                comment: newComment
+              }
+            }
+          }
+        }, { merge: true });
+
+        alert("✅ Status updated.");
+        document.getElementById("dashboard").innerHTML = "";
+        document.getElementById("errorList").innerHTML = "";
+        loadDashboard();
+      } catch (e) {
+        console.error("Failed to update:", e);
+        alert("❌ Error updating entry.");
+      }
+
+      document.getElementById("commentModal").classList.add("hidden");
+    };
 
     document.getElementById("closeModal").onclick = () => {
       document.getElementById("commentModal").classList.add("hidden");
     };
 
     window.onclick = (e) => {
-      const modal = document.getElementById("commentModal");
-      if (e.target === modal) {
-        modal.classList.add("hidden");
+      if (e.target === document.getElementById("commentModal")) {
+        document.getElementById("commentModal").classList.add("hidden");
       }
     };
 
@@ -238,49 +215,30 @@ document.getElementById("saveStatusBtn").onclick = async () => {
 
       snapshot.forEach(doc => {
         const data = doc.data();
-        const userSection = document.createElement("div");
-        userSection.className = "user-section";
-
-        const userHeader = document.createElement("div");
-        userHeader.className = "user-header";
-        userHeader.textContent = `User: ${data.userId}`;
-
-        const userContent = document.createElement("div");
-        userContent.style.display = "none";
-
-        userHeader.addEventListener("click", () => {
-          userContent.style.display = userContent.style.display === "none" ? "block" : "none";
-        });
-
-        const checklist = data.checklist || {};
         const entries = [];
+        const userId = data.userId;
+        const checklist = data.checklist || {};
 
         Object.entries(checklist).forEach(([fileKey, items]) => {
           Object.entries(items).forEach(([item, entry]) => {
-            entries.push({ fileKey, item, ...entry });
-
+            const fullEntry = { fileKey, item, ...entry, userId };
+            entries.push(fullEntry);
             if (entry.status === "No") {
-              allNoEntries.push({
-                userId: data.userId,
-                fileKey,
-                item,
-                comment: entry.comment || "No comment provided"
-              });
+              allNoEntries.push(fullEntry);
             }
           });
         });
 
-        entries.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
+        entries.sort((a, b) => a.fileKey.localeCompare(b.fileKey));
 
         const folderMap = {};
         entries.forEach(entry => {
           const parts = entry.fileKey.split("/");
           const root = parts[0];
-          const sub = parts.length === 3 ? parts[1] : null;
+          const sub = (root === "Standard2" && parts.length >= 2) ? parts[1] : null;
 
           if (!folderMap[root]) folderMap[root] = {};
           const subMap = folderMap[root];
-
           if (sub) {
             if (!subMap[sub]) subMap[sub] = [];
             subMap[sub].push(entry);
@@ -290,99 +248,95 @@ document.getElementById("saveStatusBtn").onclick = async () => {
           }
         });
 
-        Object.entries(folderMap).forEach(([folder, subs]) => {
-          const flatEntries = Object.values(subs).flat();
-          const percentComplete = computeFixedCompletionPercentage(
-            folder === "Standard2" && subs["Advanced Emergency Medical Technician"]
-              ? "Standard2/Advanced Emergency Medical Technician"
-              : folder,
-            flatEntries
-          );
+        const userSection = document.createElement("div");
+        userSection.className = "user-section";
 
-          const folderNode = createFolderNode(folder, percentComplete, userContent);
-
-          if (subs["__root__"]) {
-            const table = document.createElement("table");
-            table.innerHTML = `
-              <tr>
-                <th>File</th>
-                <th>Status</th>
-                <th>Comment</th>
-              </tr>
-            `;
-            subs["__root__"].forEach(entry => table.appendChild(createRow(entry)));
-            folderNode.appendChild(table);
-          }
-
-          Object.entries(subs).forEach(([sub, items]) => {
-            if (sub === "__root__") return;
-            const subPath = `${folder}/${sub}`;
-            const subPercent = computeFixedCompletionPercentage(subPath, items);
-            const subNode = createFolderNode(`${sub} (${subPercent}% complete)`, folderNode);
-
-            const table = document.createElement("table");
-            table.innerHTML = `
-              <tr>
-                <th>File</th>
-                <th>Status</th>
-                <th>Comment</th>
-              </tr>
-            `;
-            items.forEach(entry => table.appendChild(createRow(entry)));
-            subNode.appendChild(table);
-          });
+        const userHeader = document.createElement("div");
+        userHeader.className = "user-header";
+        userHeader.textContent = `User: ${userId}`;
+        const userContent = document.createElement("div");
+        userContent.style.display = "none";
+        userHeader.addEventListener("click", () => {
+          userContent.style.display = userContent.style.display === "none" ? "block" : "none";
         });
 
         userSection.appendChild(userHeader);
+
+        Object.entries(folderMap).forEach(([folder, subs]) => {
+          const allEntries = Object.values(subs).flat();
+          const hidePercent = folder === "Standard2";
+          const folderPercent = computeFixedCompletionPercentage(folder, allEntries);
+          const folderNode = createFolderNode(folder, folderPercent, userContent, hidePercent);
+
+          if (subs["__root__"]) {
+            const table = document.createElement("table");
+            table.innerHTML = `<tr><th>File</th><th>Status</th><th>Comment</th></tr>`;
+            subs["__root__"].forEach(e => table.appendChild(createRow(e)));
+            folderNode.appendChild(table);
+          }
+
+          if (folder === "Standard2") {
+            Object.entries(subs).forEach(([sub, items]) => {
+              if (sub === "__root__") return;
+              const subPath = `${folder}/${sub}`;
+              const subPercent = computeFixedCompletionPercentage(subPath, items);
+              const subNode = createFolderNode(sub, subPercent, folderNode);
+              const table = document.createElement("table");
+              table.innerHTML = `<tr><th>File</th><th>Status</th><th>Comment</th></tr>`;
+              items.forEach(e => table.appendChild(createRow(e)));
+              subNode.appendChild(table);
+            });
+          }
+        });
+
         userSection.appendChild(userContent);
         dashboard.appendChild(userSection);
       });
 
-      // ✅ Now render error panel after all entries are loaded
       const errorListEl = document.getElementById("errorList");
-      errorListEl.innerHTML = ""; // Clear existing if needed
+      const grouped = {};
+      allNoEntries.forEach(issue => {
+        if (!grouped[issue.userId]) grouped[issue.userId] = [];
+        grouped[issue.userId].push(issue);
+      });
 
-      const groupedByUser = {};
-allNoEntries.forEach(issue => {
-  if (!groupedByUser[issue.userId]) groupedByUser[issue.userId] = [];
-  groupedByUser[issue.userId].push(issue);
+      Object.entries(grouped).forEach(([userId, issues]) => {
+        const userItem = document.createElement("li");
+        userItem.textContent = userId;
+        userItem.style.fontWeight = "bold";
+        userItem.style.cursor = "pointer";
+
+        const subList = document.createElement("ul");
+        subList.style.display = "none";
+        subList.style.paddingLeft = "15px";
+
+        // Sort by cleaned file name
+issues.sort((a, b) => {
+  const nameA = cleanFileName(a.fileKey).toLowerCase();
+  const nameB = cleanFileName(b.fileKey).toLowerCase();
+  return nameA.localeCompare(nameB, undefined, { numeric: true });
 });
 
-Object.entries(groupedByUser).forEach(([userId, issues]) => {
-  const userItem = document.createElement("li");
-  userItem.textContent = userId;
-  userItem.style.fontWeight = "bold";
-  userItem.style.cursor = "pointer";
-
-  const issueList = document.createElement("ul");
-  issueList.style.display = "none";
-  issueList.style.paddingLeft = "15px";
-
-  // ✅ Sort fileKeys alphabetically before displaying
-  issues.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
-
-  issues.forEach(issue => {
-    const li = document.createElement("li");
-    li.textContent = cleanFileName(issue.fileKey);
-    li.style.fontWeight = "normal";
-    li.style.cursor = "pointer";
-    li.addEventListener("click", (e) => {
-  e.stopPropagation();
-  showCommentModal(issue.comment, issue.fileKey, issue.userId, issue.item, "No");
-});
-
-    issueList.appendChild(li);
+issues.forEach(issue => {
+  const li = document.createElement("li");
+  li.textContent = cleanFileName(issue.fileKey);
+  li.style.cursor = "pointer";
+  li.style.fontWeight = "normal";
+  li.addEventListener("click", (e) => {
+    e.stopPropagation();
+    showCommentModal(issue.comment, issue.fileKey, issue.userId, issue.item, issue.status);
   });
-
-  userItem.addEventListener("click", () => {
-    issueList.style.display = issueList.style.display === "none" ? "block" : "none";
-  });
-
-  errorListEl.appendChild(userItem);
-  errorListEl.appendChild(issueList);
+  subList.appendChild(li);
 });
 
 
+        userItem.addEventListener("click", () => {
+          subList.style.display = subList.style.display === "none" ? "block" : "none";
+        });
+
+        errorListEl.appendChild(userItem);
+        errorListEl.appendChild(subList);
+      });
     }
 
     loadDashboard();

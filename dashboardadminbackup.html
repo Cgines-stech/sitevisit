@@ -1,16 +1,21 @@
-<!-- dashboardbackup.html -->
+<!-- dashboardadmin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Checklist Dashboard</title>
-  <link rel="stylesheet" href="style2.css">
+  <link rel="stylesheet" href="style4.css">
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <h1>User Checklist Dashboard</h1>
+  <!-- 🔒 Admin Notice Banner -->
+  <div id="adminBanner">
+    📢 You are viewing the <span class="underlined">Admin Version</span> of the Checklist Dashboard. Changes here affect all users.
+  </div>
+
+  <h1>User Checklist Dashboard - ADMIN Version 🔐</h1>
   <div id="dashboardContainer">
   <div id="dashboard"></div>
 
@@ -27,8 +32,22 @@
     <span id="closeModal">&times;</span>
     <h3 id="modalItemHeader" style="margin-top:0;"></h3>
     <p id="commentText"></p>
+
+    <label for="statusUpdate">Change Status:</label>
+    <select id="statusUpdate">
+      <option value="Yes">Yes</option>
+      <option value="N/A">N/A</option>
+      <option value="No">No</option>
+    </select>
+
+    <!-- NEW: Comment editing input -->
+    <label for="commentUpdate">Edit Comment:</label>
+    <textarea id="commentUpdate" rows="3" style="width:100%;"></textarea>
+
+    <button id="saveStatusBtn">Save</button>
   </div>
 </div>
+
 
   <script>
 
@@ -153,13 +172,54 @@
         : 0;
     }
 
-    function showCommentModal(comment, fileKey) {
+    let currentModalEntry = null;
+
+function showCommentModal(comment, fileKey, userId, item, currentStatus) {
   const modal = document.getElementById("commentModal");
-  document.getElementById("modalItemHeader").textContent = `${fileKey}`;
+  document.getElementById("modalItemHeader").textContent = `${cleanFileName(fileKey)}`;
   document.getElementById("commentText").textContent = comment;
+  document.getElementById("statusUpdate").value = currentStatus;
+  currentModalEntry = { userId, fileKey, item };
+
   modal.classList.remove("hidden");
 }
 
+function encodeFirestoreKey(key) {
+  return key.replace(/[\[\].#/\$]/g, "_").replace(/\//g, "__");
+}
+
+document.getElementById("saveStatusBtn").onclick = async () => {
+  const newStatus = document.getElementById("statusUpdate").value;
+  const newComment = document.getElementById("commentUpdate").value;
+  const { userId, fileKey, item } = currentModalEntry;
+
+  try {
+    const userDocRef = db.collection("checklists").doc(userId);
+
+    await userDocRef.set({
+      checklist: {
+        [fileKey]: {
+          [item]: {
+            status: newStatus,
+            comment: newComment
+          }
+        }
+      }
+    }, { merge: true });
+
+    alert("✅ Status updated successfully!");
+
+    // 🔁 Refresh dashboard UI
+    document.getElementById("dashboard").innerHTML = "";
+    document.getElementById("errorList").innerHTML = "";
+    await loadDashboard();
+  } catch (error) {
+    console.error("Error updating status:", error);
+    alert("❌ Failed to update status. See console for details.");
+  }
+
+  document.getElementById("commentModal").classList.add("hidden");
+};
 
     document.getElementById("closeModal").onclick = () => {
       document.getElementById("commentModal").classList.add("hidden");
@@ -307,9 +367,10 @@ Object.entries(groupedByUser).forEach(([userId, issues]) => {
     li.style.fontWeight = "normal";
     li.style.cursor = "pointer";
     li.addEventListener("click", (e) => {
-      e.stopPropagation();
-      showCommentModal(issue.comment, cleanFileName(issue.fileKey));
-    });
+  e.stopPropagation();
+  showCommentModal(issue.comment, issue.fileKey, issue.userId, issue.item, "No");
+});
+
     issueList.appendChild(li);
   });
 
