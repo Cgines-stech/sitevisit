@@ -12,22 +12,26 @@
 <body>
   <h1>User Checklist Dashboard</h1>
   <div id="dashboardContainer">
-    <div id="dashboard"></div>
-    <div id="errorPanel">
-      <h2>⚠️ Issues Marked "No"</h2>
-      <ul id="errorList"></ul>
-    </div>
-  </div>
+  <div id="dashboard"></div>
 
-  <div id="commentModal" class="hidden">
-    <div class="modal-content">
-      <span id="closeModal">&times;</span>
-      <h3 id="modalItemHeader" style="margin-top:0;"></h3>
-      <p id="commentText"></p>
-    </div>
+  <!-- Error Panel -->
+  <div id="errorPanel">
+    <h2>⚠️ Issues Marked "No"</h2>
+    <ul id="errorList"></ul>
   </div>
+</div>
+
+<!-- Modal for showing comments -->
+<div id="commentModal" class="hidden">
+  <div class="modal-content">
+    <span id="closeModal">&times;</span>
+    <h3 id="modalItemHeader" style="margin-top:0;"></h3>
+    <p id="commentText"></p>
+  </div>
+</div>
 
   <script>
+
     function cleanFileName(fileName) {
       return fileName.replace(/\.docx\.pdf$/i, '').replace(/\.pdf$/i, '');
     }
@@ -56,36 +60,42 @@
     }
 
     function createFolderNode(name, percent, parent) {
-      const folderDiv = document.createElement("div");
-      folderDiv.className = "folder";
+  const folderDiv = document.createElement("div");
+  folderDiv.className = "folder";
 
-      const label = document.createElement("div");
-      label.className = "folder-label";
+  const label = document.createElement("div");
+  label.className = "folder-label";
 
-      const titleSpan = document.createElement("span");
-      titleSpan.textContent = name;
+  // Create label text node
+  const titleSpan = document.createElement("span");
+  titleSpan.textContent = name;
 
-      const percentSpan = document.createElement("span");
-      percentSpan.textContent = ` (${percent}% complete)`;
-      percentSpan.style.marginLeft = "4px";
-      percentSpan.style.color = percent < 100 ? "red" : "green";
+  // Create percentage span and apply red if not 100%
+  const percentSpan = document.createElement("span");
+  percentSpan.textContent = ` (${percent}% complete)`;
+  percentSpan.style.marginLeft = "4px";
+  if (percent < 100) {
+    percentSpan.style.color = "red";
+  } else {
+  percentSpan.style.color = "green";
+  }
 
-      label.appendChild(titleSpan);
-      label.appendChild(percentSpan);
+  label.appendChild(titleSpan);
+  label.appendChild(percentSpan);
 
-      const content = document.createElement("div");
-      content.className = "folder-content";
-      content.style.display = "none";
+  const content = document.createElement("div");
+  content.className = "folder-content";
+  content.style.display = "none";
 
-      label.addEventListener("click", () => {
-        content.style.display = content.style.display === "none" ? "block" : "none";
-      });
+  label.addEventListener("click", () => {
+    content.style.display = content.style.display === "none" ? "block" : "none";
+  });
 
-      folderDiv.appendChild(label);
-      folderDiv.appendChild(content);
-      parent.appendChild(folderDiv);
-      return content;
-    }
+  folderDiv.appendChild(label);
+  folderDiv.appendChild(content);
+  parent.appendChild(folderDiv);
+  return content;
+}
 
     const expectedFileCounts = {
       "Conditions": 52,
@@ -127,7 +137,9 @@
     };
 
     function computeFixedCompletionPercentage(folder, entries) {
-      const expectedCount = expectedFileCounts[folder] || 0;
+      const key = folder.includes("/") ? folder : `${folder}`;
+      const expectedCount = expectedFileCounts[key] || 0;
+
       const uniqueCompletedFiles = new Set();
 
       entries.forEach(e => {
@@ -142,11 +154,12 @@
     }
 
     function showCommentModal(comment, fileKey) {
-      const modal = document.getElementById("commentModal");
-      document.getElementById("modalItemHeader").textContent = `${fileKey}`;
-      document.getElementById("commentText").textContent = comment;
-      modal.classList.remove("hidden");
-    }
+  const modal = document.getElementById("commentModal");
+  document.getElementById("modalItemHeader").textContent = `${fileKey}`;
+  document.getElementById("commentText").textContent = comment;
+  modal.classList.remove("hidden");
+}
+
 
     document.getElementById("closeModal").onclick = () => {
       document.getElementById("commentModal").classList.add("hidden");
@@ -185,6 +198,7 @@
         Object.entries(checklist).forEach(([fileKey, items]) => {
           Object.entries(items).forEach(([item, entry]) => {
             entries.push({ fileKey, item, ...entry });
+
             if (entry.status === "No") {
               allNoEntries.push({
                 userId: data.userId,
@@ -202,7 +216,7 @@
         entries.forEach(entry => {
           const parts = entry.fileKey.split("/");
           const root = parts[0];
-          const sub = parts.length >= 2 ? parts[1] : null;
+          const sub = parts.length === 3 ? parts[1] : null;
 
           if (!folderMap[root]) folderMap[root] = {};
           const subMap = folderMap[root];
@@ -217,30 +231,42 @@
         });
 
         Object.entries(folderMap).forEach(([folder, subs]) => {
-          const folderNode = createFolderNode(folder, 0, userContent);
+          const flatEntries = Object.values(subs).flat();
+          const percentComplete = computeFixedCompletionPercentage(
+            folder === "Standard2" && subs["Advanced Emergency Medical Technician"]
+              ? "Standard2/Advanced Emergency Medical Technician"
+              : folder,
+            flatEntries
+          );
+
+          const folderNode = createFolderNode(folder, percentComplete, userContent);
 
           if (subs["__root__"]) {
-            const rootEntries = subs["__root__"];
-            const percent = computeFixedCompletionPercentage(folder, rootEntries);
             const table = document.createElement("table");
             table.innerHTML = `
-              <tr><th>File</th><th>Status</th><th>Comment</th></tr>
+              <tr>
+                <th>File</th>
+                <th>Status</th>
+                <th>Comment</th>
+              </tr>
             `;
-            rootEntries.forEach(entry => table.appendChild(createRow(entry)));
+            subs["__root__"].forEach(entry => table.appendChild(createRow(entry)));
             folderNode.appendChild(table);
-            folderNode.previousSibling.querySelector("span:nth-child(2)").textContent = ` (${percent}% complete)`;
-            folderNode.previousSibling.querySelector("span:nth-child(2)").style.color = percent < 100 ? "red" : "green";
           }
 
           Object.entries(subs).forEach(([sub, items]) => {
             if (sub === "__root__") return;
             const subPath = `${folder}/${sub}`;
             const subPercent = computeFixedCompletionPercentage(subPath, items);
-            const subNode = createFolderNode(`${sub}`, subPercent, folderNode);
+            const subNode = createFolderNode(`${sub} (${subPercent}% complete)`, folderNode);
 
             const table = document.createElement("table");
             table.innerHTML = `
-              <tr><th>File</th><th>Status</th><th>Comment</th></tr>
+              <tr>
+                <th>File</th>
+                <th>Status</th>
+                <th>Comment</th>
+              </tr>
             `;
             items.forEach(entry => table.appendChild(createRow(entry)));
             subNode.appendChild(table);
@@ -252,45 +278,50 @@
         dashboard.appendChild(userSection);
       });
 
+      // ✅ Now render error panel after all entries are loaded
       const errorListEl = document.getElementById("errorList");
-      errorListEl.innerHTML = "";
+      errorListEl.innerHTML = ""; // Clear existing if needed
+
       const groupedByUser = {};
-      allNoEntries.forEach(issue => {
-        if (!groupedByUser[issue.userId]) groupedByUser[issue.userId] = [];
-        groupedByUser[issue.userId].push(issue);
-      });
+allNoEntries.forEach(issue => {
+  if (!groupedByUser[issue.userId]) groupedByUser[issue.userId] = [];
+  groupedByUser[issue.userId].push(issue);
+});
 
-      Object.entries(groupedByUser).forEach(([userId, issues]) => {
-        const userItem = document.createElement("li");
-        userItem.textContent = userId;
-        userItem.style.fontWeight = "bold";
-        userItem.style.cursor = "pointer";
+Object.entries(groupedByUser).forEach(([userId, issues]) => {
+  const userItem = document.createElement("li");
+  userItem.textContent = userId;
+  userItem.style.fontWeight = "bold";
+  userItem.style.cursor = "pointer";
 
-        const issueList = document.createElement("ul");
-        issueList.style.display = "none";
-        issueList.style.paddingLeft = "15px";
+  const issueList = document.createElement("ul");
+  issueList.style.display = "none";
+  issueList.style.paddingLeft = "15px";
 
-        issues.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
+  // ✅ Sort fileKeys alphabetically before displaying
+  issues.sort((a, b) => a.fileKey.localeCompare(b.fileKey, undefined, { numeric: true }));
 
-        issues.forEach(issue => {
-          const li = document.createElement("li");
-          li.textContent = cleanFileName(issue.fileKey);
-          li.style.fontWeight = "normal";
-          li.style.cursor = "pointer";
-          li.addEventListener("click", (e) => {
-            e.stopPropagation();
-            showCommentModal(issue.comment, cleanFileName(issue.fileKey));
-          });
-          issueList.appendChild(li);
-        });
+  issues.forEach(issue => {
+    const li = document.createElement("li");
+    li.textContent = cleanFileName(issue.fileKey);
+    li.style.fontWeight = "normal";
+    li.style.cursor = "pointer";
+    li.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showCommentModal(issue.comment, cleanFileName(issue.fileKey));
+    });
+    issueList.appendChild(li);
+  });
 
-        userItem.addEventListener("click", () => {
-          issueList.style.display = issueList.style.display === "none" ? "block" : "none";
-        });
+  userItem.addEventListener("click", () => {
+    issueList.style.display = issueList.style.display === "none" ? "block" : "none";
+  });
 
-        errorListEl.appendChild(userItem);
-        errorListEl.appendChild(issueList);
-      });
+  errorListEl.appendChild(userItem);
+  errorListEl.appendChild(issueList);
+});
+
+
     }
 
     loadDashboard();
