@@ -637,7 +637,7 @@ const folders = {
     "2.F.6.docx.pdf",
     "2.F.7.docx.pdf"
   ],
-
+*/
   "Standard2/Medical Assistant": [
     "2.A.1.docx.pdf",
     "2.A.2.docx.pdf",
@@ -686,7 +686,7 @@ const folders = {
     "2.F.6.docx.pdf",
     "2.F.7.docx.pdf"
   ],
-
+/*
   "Standard2/Medical Office Receptionist": [
     "2.A.1.docx.pdf",
     "2.A.2.docx.pdf",
@@ -883,7 +883,7 @@ const folders = {
     "2.F.7.docx.pdf"
   ],
 
-  "Standard2/XPhlebotomy": [
+  "Standard2/Phlebotomy": [
     "2.A.1.docx.pdf",
     "2.A.2.docx.pdf",
     "2.A.3.docx.pdf",
@@ -1592,6 +1592,52 @@ const associatedDocs = {
   //Standard2/Master Esthetician
 
   //Standard2/Medical Assistant
+  "Standard2/Medical Assistant/2.A.1.docx.pdf": [""],
+  "Standard2/Medical Assistant/2.A.2.docx.pdf": [],
+  "Standard2/Medical Assistant/2.A.3.docx.pdf": [],
+  "Standard2/Medical Assistant/2.A.4.docx.pdf": [],
+  "Standard2/Medical Assistant/2.A.5.docx.pdf": [],
+  "Standard2/Medical Assistant/2.A.6.docx.pdf": [],
+  "Standard2/Medical Assistant/2.A.7.docx.pdf": [],
+  "Standard2/Medical Assistant/2.A.8.docx.pdf": [],
+  "Standard2/Medical Assistant/2.B.1.docx.pdf": [],
+  "Standard2/Medical Assistant/2.B.2.docx.pdf": [],
+  "Standard2/Medical Assistant/2.B.3.docx.pdf": [],
+  "Standard2/Medical Assistant/2.B.4.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.1.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.2.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.3.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.4.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.5.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.6.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.7.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.8.docx.pdf": [],
+  "Standard2/Medical Assistant/2.C.9.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.1.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.2.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.3.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.4.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.5.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.6.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.7.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.8.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.9.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.10.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.11.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.12.docx.pdf": [],
+  "Standard2/Medical Assistant/2.D.13.docx.pdf": [],
+  "Standard2/Medical Assistant/2.E.1.docx.pdf": [],
+  "Standard2/Medical Assistant/2.E.2.docx.pdf": [],
+  "Standard2/Medical Assistant/2.E.3.docx.pdf": [],
+  "Standard2/Medical Assistant/2.E.4.docx.pdf": [],
+  "Standard2/Medical Assistant/2.E.5.docx.pdf": [],
+  "Standard2/Medical Assistant/2.F.1.docx.pdf": [],
+  "Standard2/Medical Assistant/2.F.2.docx.pdf": [],
+  "Standard2/Medical Assistant/2.F.3.docx.pdf": [],
+  "Standard2/Medical Assistant/2.F.4.docx.pdf": [],
+  "Standard2/Medical Assistant/2.F.5.docx.pdf": [],
+  "Standard2/Medical Assistant/2.F.6.docx.pdf": [],
+  "Standard2/Medical Assistant/2.F.7.docx.pdf": [],
 
   //Standard2/Medical Office Receptionist
 
